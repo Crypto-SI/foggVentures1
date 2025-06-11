@@ -18,9 +18,9 @@ export function Header() {
           <Image
             src="/images/foggicontrans.png"
             alt="FOGG Ventures Icon"
-            width={28}
-            height={28}
-            className="h-7 w-7" // Increased size
+            width={36} 
+            height={36}
+            className="h-9 w-9" // Increased size
           />
           <span className="text-xl font-bold text-primary font-headline">
             FOGG Ventures
