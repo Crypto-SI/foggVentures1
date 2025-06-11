@@ -6,10 +6,9 @@ import { ShieldEllipsis } from 'lucide-react';
 
 export function Header() {
   const navItems = [
-    { name: 'About', href: '#about' },
-    { name: 'Services', href: '#services' },
-    { name: 'AI Assist', href: '/ai-assistant' }, // Updated href
-    // { name: 'Contact', href: '#contact' }, // Removed Contact link
+    { name: 'About', href: '/#about' },
+    { name: 'Services', href: '/#services' },
+    { name: 'AI Assist', href: '/ai-assistant' },
   ];
 
   return (
@@ -27,11 +26,6 @@ export function Header() {
               <Link href={item.href}>{item.name}</Link>
             </Button>
           ))}
-           {/* Removed Book Consultation Button
-           <Button asChild className="bg-accent text-accent-foreground hover:bg-accent/90 ml-2">
-             <Link href="#contact">Book Consultation</Link>
-           </Button> 
-           */}
         </nav>
         {/* TODO: Add mobile menu if needed */}
       </Container>
