@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox'; // Added Checkbox import
 import { Progress } from '@/components/ui/progress';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { BrainCircuit, MessageCircle, ShieldCheck, Lightbulb, Percent, Loader2, AlertTriangle, Info } from 'lucide-react';
@@ -18,9 +19,14 @@ export function AiAssistantSection() {
   const [assessment, setAssessment] = useState<PreliminaryAssessmentOutput | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isHumanConfirmed, setIsHumanConfirmed] = useState(false); // State for bot confirmation
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (!isHumanConfirmed) {
+        setError("Please confirm you are not a bot before submitting.");
+        return;
+    }
     if (userInput.trim().length < 10) {
         setError("Please provide a more detailed description of your needs (at least 10 characters).");
         return;
@@ -122,7 +128,30 @@ export function AiAssistantSection() {
                   disabled={isLoading}
                 />
               </div>
-              <Button type="submit" className="w-full bg-accent text-accent-foreground hover:bg-accent/90 text-lg py-3" disabled={isLoading}>
+              
+              <div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="humanConfirm"
+                    checked={isHumanConfirmed}
+                    onCheckedChange={(checked) => setIsHumanConfirmed(checked === true)}
+                    disabled={isLoading}
+                    aria-label="Confirm you are not a bot"
+                  />
+                  <Label
+                    htmlFor="humanConfirm"
+                    className="text-sm font-medium text-foreground peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    I confirm I am not a bot.
+                  </Label>
+                </div>
+              </div>
+
+              <Button 
+                type="submit" 
+                className="w-full bg-accent text-accent-foreground hover:bg-accent/90 text-lg py-3" 
+                disabled={isLoading || !isHumanConfirmed}
+              >
                 {isLoading ? (
                   <>
                     <Loader2 className="mr-2 h-5 w-5 animate-spin" />
