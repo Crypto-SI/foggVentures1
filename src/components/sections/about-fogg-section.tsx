@@ -8,13 +8,13 @@ export function AboutFoggSection() {
       <Container>
         <div className="max-w-3xl mx-auto text-center mb-12">
           <h2 className="font-headline text-3xl sm:text-4xl font-bold text-primary">
-            About FOGG Ventures: Driving Success in Guyana
+            Guyana is Open for Business
           </h2>
         </div>
         <Card className="bg-card shadow-xl max-w-4xl mx-auto">
           <CardContent className="pt-8 text-lg text-card-foreground/90 space-y-6 leading-relaxed">
             <p>
-              At FOGG Ventures, we're not just consultants; we're strategic partners dedicated to unlocking Guyana's vast potential for discerning investors and businesses. Led by former British diplomat Kirk Hollingsworth, we bring unparalleled on-the-ground expertise and a global perspective to navigate Guyana's unique commercial and governmental landscape. Our core mission is simple: to cut through complexity, connect you with the right opportunities, and deliver tangible results that accelerate your growth and ensure your ventures thrive in this dynamic market. We understand what it takes to succeed here, and we're committed to making your objectives a reality.
+              The message is clear: Guyana is booming, and the opportunities are immense across multiple sectors. From energy and natural resources to infrastructure, agriculture, and tourism, this nation is on an unprecedented growth trajectory. But navigating new frontiers requires local insight and strategic connections. That's where FOGG Ventures steps in. We provide the critical intelligence, high-level access, and on-the-ground support your business needs to not just enter, but to truly capitalize on Guyana's dynamic market. We cut through the noise, identify the real opportunities, and help you make the moves that matter for success.
             </p>
           </CardContent>
         </Card>
