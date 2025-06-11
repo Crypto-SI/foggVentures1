@@ -16,12 +16,12 @@ export type StrategySuggestion = z.infer<typeof StrategySuggestionSchema>;
 // Discriminated union for the output
 export const PreliminaryAssessmentOutputSchema = z.discriminatedUnion("type", [
   z.object({
-    type: z.literal("assessment"),
+    type: z.enum(["assessment"]).describe("Indicates this is an assessment response."),
     suggestions: z.array(StrategySuggestionSchema).min(1).max(3).describe('A list of 1 to 3 potential assistance strategies.'),
     disclaimer: z.string().describe('A standard disclaimer that this is an AI assessment and not a formal consultation.'),
   }),
   z.object({
-    type: z.literal("clarification_needed"),
+    type: z.enum(["clarification_needed"]).describe("Indicates the AI needs more information."),
     followUpQuestions: z.array(z.string().min(1)).min(1).max(3).describe('A list of 1 to 3 follow-up questions to clarify user needs.'),
     originalInput: z.string().describe('The user\'s original input that led to these clarification questions.'),
     disclaimer: z.string().describe('A standard disclaimer.'),
