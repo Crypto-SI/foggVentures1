@@ -3,52 +3,39 @@ import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { Container } from '@/components/container';
 import { NewsCard, type NewsCardProps } from '@/components/news-card';
+import type { ParsedRssItem } from '@/lib/news-utils'; // We'll define this
+import { getNewsFromMockRss } from '@/lib/news-utils'; // We'll create this
 
-// Mock data for news articles
-const mockNewsArticles: NewsCardProps[] = [
-  {
-    id: 'news-1',
-    title: "Guyana's Q3 Economic Growth Exceeds Expectations, Oil Sector Leads Charge",
-    source: 'Guyana Chronicle',
-    date: 'October 28, 2023',
-    summary: 'The latest figures released by the Ministry of Finance show robust economic growth in the third quarter, primarily driven by increased oil production and strong performances in the services sector. Non-oil growth also shows positive trends.',
-    articleUrl: '#', // Replace with actual URL if available
-    imageUrl: 'https://placehold.co/600x400.png',
-    imageHint: 'Guyana oil rig',
-  },
-  {
-    id: 'news-2',
-    title: 'Government Announces New Incentives for Agricultural Investment',
-    source: 'Stabroek News',
-    date: 'October 25, 2023',
-    summary: 'In a bid to diversify the economy, new incentives and support programs have been announced for local and international investors in the agricultural sector, focusing on sustainable farming and food security.',
-    articleUrl: '#',
-    imageUrl: 'https://placehold.co/600x400.png',
-    imageHint: 'agriculture Guyana',
-  },
-  {
-    id: 'news-3',
-    title: 'International Monetary Fund Upgrades Guyana\'s Economic Forecast for 2024',
-    source: 'Reuters',
-    date: 'October 22, 2023',
-    summary: 'The IMF has revised its economic outlook for Guyana, projecting even stronger GDP growth for the upcoming year based on continued expansion in the energy sector and prudent fiscal management.',
-    articleUrl: '#',
-    imageUrl: 'https://placehold.co/600x400.png',
-    imageHint: 'economic chart graph',
-  },
-  {
-    id: 'news-4',
-    title: 'Tech Hub Initiative Launched to Boost Digital Economy',
-    source: 'Department of Public Information',
-    date: 'October 19, 2023',
-    summary: 'A new government-led initiative aims to foster a vibrant technology ecosystem in Guyana, providing training, funding, and infrastructure to support startups and digital innovation.',
-    articleUrl: '#',
-    imageUrl: 'https://placehold.co/600x400.png',
-    imageHint: 'technology computer code',
-  },
-];
+// Helper to transform ParsedRssItem to NewsCardProps
+function transformRssItemToNewsCardProps(item: ParsedRssItem): NewsCardProps {
+  // Attempt to find an image URL
+  let imageUrl = 'https://placehold.co/600x400.png'; // Default placeholder
+  if (item.enclosure && item.enclosure.url && item.enclosure.type && item.enclosure.type.startsWith('image/')) {
+    imageUrl = item.enclosure.url;
+  } else if (item['media:content'] && item['media:content'].$ && item['media:content'].$.url && item['media:content'].$.medium === 'image') {
+    imageUrl = item['media:content'].$.url;
+  }
+  // More advanced image extraction from item.content or item.contentEncoded could be added here if needed
 
-export default function NewsPage() {
+  return {
+    id: item.guid || item.link || item.title || Date.now().toString(), // Ensure a unique ID
+    title: item.title || 'Untitled Article',
+    source: item.creator || new URL(item.link || 'https://example.com').hostname, // Fallback to hostname
+    date: item.pubDate ? new Date(item.pubDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'N/A',
+    summary: item.contentSnippet || item.content?.substring(0, 150) + '...' || 'No summary available.',
+    articleUrl: item.link || '#',
+    imageUrl: imageUrl,
+    // data-ai-hint is not typically used when images come from a feed
+  };
+}
+
+
+export default async function NewsPage() {
+  // In a real scenario, getNewsFromRss would fetch and parse the actual RSS feed.
+  // For now, it returns mock data.
+  const newsItems: ParsedRssItem[] = await getNewsFromMockRss();
+  const processedNewsItems: NewsCardProps[] = newsItems.map(transformRssItemToNewsCardProps);
+
   return (
     <div className="flex flex-col min-h-screen bg-muted/40">
       <Header />
@@ -63,9 +50,9 @@ export default function NewsPage() {
             </p>
           </div>
 
-          {mockNewsArticles.length > 0 ? (
+          {processedNewsItems.length > 0 ? (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {mockNewsArticles.map((article) => (
+              {processedNewsItems.map((article) => (
                 <NewsCard key={article.id} {...article} />
               ))}
             </div>
