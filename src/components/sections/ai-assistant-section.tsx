@@ -7,10 +7,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input'; // Added Input
 import { Checkbox } from '@/components/ui/checkbox';
 import { Progress } from '@/components/ui/progress';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { BrainCircuit, MessageCircle, ShieldCheck, Lightbulb, Percent, Loader2, AlertTriangle, Info, HelpCircle, MessageSquareQuote } from 'lucide-react';
+import { BrainCircuit, MessageCircle, ShieldCheck, Lightbulb, Percent, Loader2, AlertTriangle, Info, HelpCircle, MessageSquareQuote, Mail } from 'lucide-react';
 import { getPreliminaryAssessment } from '@/ai/flows/preliminary-assessment-flow';
 import type { PreliminaryAssessmentInput, PreliminaryAssessmentOutput, StrategySuggestion } from '@/lib/ai-schemas';
 
@@ -21,14 +22,18 @@ interface ActiveConversation {
 }
 
 export function AiAssistantSection() {
-  const [userInput, setUserInput] = useState(''); // For the main textarea for the initial query
+  const [userInput, setUserInput] = useState('');
   const [assessment, setAssessment] = useState<PreliminaryAssessmentOutput | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isHumanConfirmed, setIsHumanConfirmed] = useState(false);
-
-  // State for follow-up questions
   const [activeConversation, setActiveConversation] = useState<ActiveConversation | null>(null);
+
+  // New state for email capture and unlocking details
+  const [capturedEmail, setCapturedEmail] = useState('');
+  const [isEmailFormVisible, setIsEmailFormVisible] = useState(false);
+  const [areDetailsUnlocked, setAreDetailsUnlocked] = useState(false);
+  const [emailCaptureError, setEmailCaptureError] = useState<string | null>(null);
 
   const handleAnswerChange = (index: number, value: string) => {
     if (activeConversation) {
@@ -48,7 +53,6 @@ export function AiAssistantSection() {
     let submissionInput: PreliminaryAssessmentInput;
 
     if (activeConversation) {
-      // Submitting answers to follow-up questions
       if (activeConversation.answers.some(ans => ans.trim().length < 3)) {
         setError("Please provide a brief answer to all follow-up questions (at least 3 characters per answer).");
         return;
@@ -56,7 +60,6 @@ export function AiAssistantSection() {
       const combinedInput = `Original query was: "${activeConversation.originalQuery}"\n\nFollow-up questions and my answers are:\n${activeConversation.questions.map((q, i) => `Question: ${q}\nMy Answer: ${activeConversation.answers[i] || "No answer provided."}`).join('\n\n')}`;
       submissionInput = { userInput: combinedInput };
     } else {
-      // Submitting initial query
       if (userInput.trim().length < 10) {
         setError("Please provide a more detailed description of your needs (at least 10 characters).");
         return;
@@ -66,9 +69,10 @@ export function AiAssistantSection() {
 
     setIsLoading(true);
     setError(null);
-    // Keep previous assessment/questions visible while loading new ones, or clear them:
-    // setAssessment(null); 
-    // setActiveConversation(null); // Clearing activeConversation if it was one, to show loading state properly
+    setAreDetailsUnlocked(false); // Reset details lock
+    setIsEmailFormVisible(false); // Hide email form initially
+    setCapturedEmail(''); // Clear previous email
+    setEmailCaptureError(null);
 
     try {
       const result = await getPreliminaryAssessment(submissionInput);
@@ -76,22 +80,38 @@ export function AiAssistantSection() {
 
       if (result.type === 'clarification_needed') {
         setActiveConversation({
-          originalQuery: result.originalInput, // This should be the input that LED to questions
+          originalQuery: result.originalInput,
           questions: result.followUpQuestions,
           answers: Array(result.followUpQuestions.length).fill(''),
         });
-        setUserInput(''); // Clear main input as we now have dedicated answer fields
-      } else {
-        setActiveConversation(null); // Clear conversation if assessment is received
+        setUserInput('');
+      } else if (result.type === 'assessment') {
+        setActiveConversation(null);
+        setIsEmailFormVisible(true); // Show email form to unlock details
       }
     } catch (e) {
       console.error(e);
       setError('An unexpected error occurred. Please try again later.');
-      setAssessment(null); // Clear assessment on error
-      setActiveConversation(null); // Clear conversation on error
+      setAssessment(null);
+      setActiveConversation(null);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleEmailCaptureSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setEmailCaptureError(null);
+    if (!capturedEmail || !capturedEmail.includes('@') || capturedEmail.trim().length < 5) {
+      setEmailCaptureError("Please enter a valid email address.");
+      return;
+    }
+    console.log("Email captured:", capturedEmail);
+    // In a real app, you'd send this to a backend, potentially trigger verification.
+    // For now, we just "unlock" the details.
+    setAreDetailsUnlocked(true);
+    setIsEmailFormVisible(false); // Hide the email form
+    // Optionally, you could store the email in localStorage or send to an action
   };
 
   const startNewQuery = () => {
@@ -99,6 +119,11 @@ export function AiAssistantSection() {
     setAssessment(null);
     setActiveConversation(null);
     setError(null);
+    // Reset email capture states
+    setCapturedEmail('');
+    setIsEmailFormVisible(false);
+    setAreDetailsUnlocked(false);
+    setEmailCaptureError(null);
     // isHumanConfirmed could be reset here if desired, or kept
   };
 
@@ -114,7 +139,6 @@ export function AiAssistantSection() {
           </p>
         </div>
 
-        {/* How it works cards - unchanged */}
         <div className="grid md:grid-cols-3 gap-8 mb-12 items-start">
           <Card className="bg-card shadow-md text-center flex flex-col items-center py-6">
             <CardHeader className="pt-0">
@@ -151,12 +175,11 @@ export function AiAssistantSection() {
             </CardHeader>
             <CardContent className="flex-grow">
               <p className="text-card-foreground/90">
-                Our AI will provide potential strategies and estimated success chances. This is a preliminary, non-binding assessment. <span className="font-semibold block mt-2">No information is saved.</span>
+                Our AI will provide potential strategies. Enter your email to unlock detailed reasoning and success chances. This is a preliminary, non-binding assessment. <span className="font-semibold block mt-2">No information is saved by FOGG Ventures without your consent.</span>
               </p>
             </CardContent>
           </Card>
         </div>
-
 
         <Card className="max-w-3xl mx-auto shadow-xl bg-card">
           <CardHeader>
@@ -250,7 +273,7 @@ export function AiAssistantSection() {
                   activeConversation ? 'Submit Answers & Get Assessment' : 'Get AI Assessment'
                 )}
               </Button>
-              {(assessment || activeConversation || error) && !isLoading && (
+              {(assessment || activeConversation || error || isEmailFormVisible) && !isLoading && (
                  <Button 
                     type="button" 
                     variant="outline"
@@ -264,7 +287,7 @@ export function AiAssistantSection() {
           </CardContent>
         </Card>
 
-        {error && (
+        {error && !isLoading && (
           <Alert variant="destructive" className="mt-8 max-w-3xl mx-auto">
             <AlertTriangle className="h-4 w-4" />
             <AlertTitle>Error</AlertTitle>
@@ -274,7 +297,13 @@ export function AiAssistantSection() {
 
         {assessment && assessment.type === 'assessment' && !error && !activeConversation && (
           <div className="mt-12 max-w-3xl mx-auto">
-            <h3 className="text-2xl font-semibold text-primary mb-6 text-center">AI Assessment Results</h3>
+            <h3 className="text-2xl font-semibold text-primary mb-2 text-center">
+              {areDetailsUnlocked ? "AI Assessment Results" : "Preliminary Strategies"}
+            </h3>
+             {!areDetailsUnlocked && isEmailFormVisible && (
+                <p className="text-center text-muted-foreground mb-6">Key strategies identified. Enter your email below to unlock detailed reasoning and success probabilities.</p>
+            )}
+            
             <div className="space-y-6">
               {assessment.suggestions.map((suggestion, index) => (
                 <Card key={index} className="bg-card shadow-lg">
@@ -284,23 +313,66 @@ export function AiAssistantSection() {
                             <Lightbulb className="h-6 w-6 mr-3 text-accent" />
                             Strategy: {suggestion.strategy}
                         </CardTitle>
-                        <div className="flex flex-col items-end">
-                            <div className="flex items-center text-lg font-semibold text-accent">
-                                <Percent className="h-5 w-5 mr-1" /> {suggestion.successChance}%
+                        {areDetailsUnlocked && (
+                            <div className="flex flex-col items-end">
+                                <div className="flex items-center text-lg font-semibold text-accent">
+                                    <Percent className="h-5 w-5 mr-1" /> {suggestion.successChance}%
+                                </div>
+                                <p className="text-xs text-muted-foreground">Est. Success</p>
                             </div>
-                            <p className="text-xs text-muted-foreground">Est. Success</p>
-                        </div>
+                        )}
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-card-foreground/90 mb-2"><strong>Reasoning:</strong> {suggestion.reasoning}</p>
-                    {suggestion.successChance > 0 && suggestion.successChance <= 100 && (
+                    {areDetailsUnlocked ? (
+                        <p className="text-card-foreground/90 mb-2"><strong>Reasoning:</strong> {suggestion.reasoning}</p>
+                    ) : (
+                        <p className="text-sm text-muted-foreground italic">Enter your email to view detailed reasoning and success chance.</p>
+                    )}
+                    {areDetailsUnlocked && suggestion.successChance > 0 && suggestion.successChance <= 100 && (
                          <Progress value={suggestion.successChance} className="h-3 mt-3" />
                     )}
                   </CardContent>
                 </Card>
               ))}
             </div>
+
+            {isEmailFormVisible && !areDetailsUnlocked && (
+              <Card className="mt-8 bg-secondary shadow-md">
+                <CardHeader>
+                  <CardTitle className="text-xl text-primary flex items-center">
+                    <Mail className="h-5 w-5 mr-2 text-accent" />
+                    Unlock Full Details
+                  </CardTitle>
+                  <CardDescription className="text-secondary-foreground/90">
+                    Provide your email address to view the complete assessment, including detailed reasoning and estimated success chances for each strategy.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <form onSubmit={handleEmailCaptureSubmit} className="space-y-4">
+                    <div>
+                      <Label htmlFor="capturedEmail" className="text-sm font-medium text-foreground">
+                        Your Email Address
+                      </Label>
+                      <Input
+                        id="capturedEmail"
+                        type="email"
+                        value={capturedEmail}
+                        onChange={(e) => setCapturedEmail(e.target.value)}
+                        placeholder="you@example.com"
+                        className="mt-1"
+                        disabled={isLoading}
+                      />
+                      {emailCaptureError && <p className="mt-1 text-sm text-destructive">{emailCaptureError}</p>}
+                    </div>
+                    <Button type="submit" className="w-full bg-primary text-primary-foreground hover:bg-primary/90" disabled={isLoading}>
+                      {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Unlock Full Assessment"}
+                    </Button>
+                  </form>
+                </CardContent>
+              </Card>
+            )}
+
             <Alert className="mt-8 border-primary/30 bg-primary/5">
                 <Info className="h-5 w-5 text-primary" />
               <AlertTitle className="text-primary font-semibold">Important Disclaimer</AlertTitle>
@@ -310,8 +382,7 @@ export function AiAssistantSection() {
             </Alert>
           </div>
         )}
-         {/* Disclaimer when questions are asked, if not already part of assessment object */}
-        {assessment && assessment.type === 'clarification_needed' && !error && (
+         {assessment && assessment.type === 'clarification_needed' && !error && (
            <Alert className="mt-8 max-w-3xl mx-auto border-primary/30 bg-primary/5">
                 <Info className="h-5 w-5 text-primary" />
               <AlertTitle className="text-primary font-semibold">Important Disclaimer</AlertTitle>
