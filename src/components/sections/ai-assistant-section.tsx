@@ -7,10 +7,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input'; // Added Input
+import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Progress } from '@/components/ui/progress';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { BrainCircuit, MessageCircle, ShieldCheck, Lightbulb, Percent, Loader2, AlertTriangle, Info, HelpCircle, MessageSquareQuote, Mail } from 'lucide-react';
 import { getPreliminaryAssessment } from '@/ai/flows/preliminary-assessment-flow';
 import type { PreliminaryAssessmentInput, PreliminaryAssessmentOutput, StrategySuggestion } from '@/lib/ai-schemas';
@@ -29,7 +30,6 @@ export function AiAssistantSection() {
   const [isHumanConfirmed, setIsHumanConfirmed] = useState(false);
   const [activeConversation, setActiveConversation] = useState<ActiveConversation | null>(null);
 
-  // New state for email capture and unlocking details
   const [capturedEmail, setCapturedEmail] = useState('');
   const [isEmailFormVisible, setIsEmailFormVisible] = useState(false);
   const [areDetailsUnlocked, setAreDetailsUnlocked] = useState(false);
@@ -69,9 +69,9 @@ export function AiAssistantSection() {
 
     setIsLoading(true);
     setError(null);
-    setAreDetailsUnlocked(false); // Reset details lock
-    setIsEmailFormVisible(false); // Hide email form initially
-    setCapturedEmail(''); // Clear previous email
+    setAreDetailsUnlocked(false);
+    setIsEmailFormVisible(false);
+    setCapturedEmail('');
     setEmailCaptureError(null);
 
     try {
@@ -87,7 +87,7 @@ export function AiAssistantSection() {
         setUserInput('');
       } else if (result.type === 'assessment') {
         setActiveConversation(null);
-        setIsEmailFormVisible(true); // Show email form to unlock details
+        setIsEmailFormVisible(true);
       }
     } catch (e) {
       console.error(e);
@@ -106,25 +106,28 @@ export function AiAssistantSection() {
       setEmailCaptureError("Please enter a valid email address.");
       return;
     }
-    console.log("Email captured:", capturedEmail);
-    // In a real app, you'd send this to a backend, potentially trigger verification.
-    // For now, we just "unlock" the details.
+    console.log("Email captured for unlocking details:", capturedEmail);
     setAreDetailsUnlocked(true);
-    setIsEmailFormVisible(false); // Hide the email form
-    // Optionally, you could store the email in localStorage or send to an action
+    setIsEmailFormVisible(false);
   };
+  
+  const handleEmailReport = () => {
+    // Placeholder function for emailing the report
+    console.log(`Email report requested for: ${capturedEmail || 'user (email not captured for report yet)'}`);
+    // In a real app, you'd trigger an API call here
+    alert("This feature is not yet implemented, but your report would be emailed here.");
+  };
+
 
   const startNewQuery = () => {
     setUserInput('');
     setAssessment(null);
     setActiveConversation(null);
     setError(null);
-    // Reset email capture states
     setCapturedEmail('');
     setIsEmailFormVisible(false);
     setAreDetailsUnlocked(false);
     setEmailCaptureError(null);
-    // isHumanConfirmed could be reset here if desired, or kept
   };
 
   return (
@@ -371,6 +374,24 @@ export function AiAssistantSection() {
                   </form>
                 </CardContent>
               </Card>
+            )}
+
+            {areDetailsUnlocked && (
+              <div className="mt-8 text-center">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button variant="outline" onClick={handleEmailReport} className="text-primary border-primary/50 hover:bg-primary/5 hover:text-primary">
+                        <Mail className="mr-2 h-4 w-4" />
+                        Email This Assessment To Myself
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>This will email the report to you for future browsing.</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
             )}
 
             <Alert className="mt-8 border-primary/30 bg-primary/5">
