@@ -1,8 +1,8 @@
 
 import Link from 'next/link';
+import Image from 'next/image'; // Added Image import
 import { Container } from '@/components/container';
 import { Button } from '@/components/ui/button'; 
-import { ShieldEllipsis } from 'lucide-react'; 
 
 export function Header() {
   const navItems = [
@@ -15,7 +15,13 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <Container className="flex h-16 items-center justify-between">
         <Link href="/" className="flex items-center gap-2">
-          <ShieldEllipsis className="h-7 w-7 text-primary" />
+          <Image
+            src="/images/foggicontrans.png"
+            alt="FOGG Ventures Icon"
+            width={28}
+            height={28}
+            className="h-7 w-7" // Keep consistent sizing with previous icon
+          />
           <span className="text-xl font-bold text-primary font-headline">
             FOGG Ventures
           </span>
