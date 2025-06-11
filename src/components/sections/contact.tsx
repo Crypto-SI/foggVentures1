@@ -2,7 +2,8 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useFormState, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
+import { useFormState, useFormStatus } from 'react-dom'; // Corrected imports
 import { zodResolver } from '@hookform/resolvers/zod';
 import { submitEnquiry, type ContactFormState } from '@/app/actions';
 import { contactFormSchema, type ContactFormValues } from '@/lib/schemas';
@@ -24,13 +25,24 @@ const initialFormState: ContactFormState = {
   fieldValues: { name: '', email: '', subject: '', message: '' },
 };
 
+// Helper component for the submit button to use useFormStatus
+function FormSubmitButton() {
+  const { pending } = useFormStatus();
+  return (
+    <Button type="submit" className="w-full bg-accent text-accent-foreground hover:bg-accent/90 text-lg py-3" disabled={pending}>
+      {pending ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : 'Send Enquiry'}
+    </Button>
+  );
+}
+
 export function ContactSection() {
   const { toast } = useToast();
   const [state, formAction] = useFormState(submitEnquiry, initialFormState);
   
   const form = useForm<ContactFormValues>({
     resolver: zodResolver(contactFormSchema),
-    defaultValues: state.fieldValues || initialFormState.fieldValues,
+    // defaultValues will be updated by form.reset in useEffect based on server state
+    defaultValues: initialFormState.fieldValues, 
   });
 
   useEffect(() => {
@@ -40,7 +52,7 @@ export function ContactSection() {
         description: state.message,
         variant: "default",
       });
-      form.reset(state.fieldValues); // Reset form with cleared values from server
+      form.reset(state.fieldValues || initialFormState.fieldValues); // Reset form with cleared values or initial
     } else if (state.status === 'error') {
       toast({
         title: "Error",
@@ -52,9 +64,7 @@ export function ContactSection() {
         form.reset(state.fieldValues);
       }
     }
-  }, [state, toast, form]);
-
-  const {formState: {isSubmitting}} = form;
+  }, [state, toast, form.reset]); // form.reset is stable, added to deps
 
   return (
     <section id="contact" className="py-16 md:py-24 bg-background">
@@ -77,6 +87,7 @@ export function ContactSection() {
                   {...form.register('name')}
                   className="mt-1"
                   placeholder="e.g. John Doe"
+                  defaultValue={state.fieldValues?.name || ''} // Ensure field repopulates
                 />
                 {state.errors?.name && <p className="mt-1 text-sm text-destructive">{state.errors.name[0]}</p>}
               </div>
@@ -89,6 +100,7 @@ export function ContactSection() {
                   {...form.register('email')}
                   className="mt-1"
                   placeholder="e.g. john.doe@example.com"
+                  defaultValue={state.fieldValues?.email || ''} // Ensure field repopulates
                 />
                 {state.errors?.email && <p className="mt-1 text-sm text-destructive">{state.errors.email[0]}</p>}
               </div>
@@ -100,6 +112,7 @@ export function ContactSection() {
                   {...form.register('subject')}
                   className="mt-1"
                   placeholder="e.g. Market Entry Query"
+                  defaultValue={state.fieldValues?.subject || ''} // Ensure field repopulates
                 />
                 {state.errors?.subject && <p className="mt-1 text-sm text-destructive">{state.errors.subject[0]}</p>}
               </div>
@@ -112,13 +125,12 @@ export function ContactSection() {
                   rows={5}
                   className="mt-1"
                   placeholder="Please describe your enquiry in detail..."
+                  defaultValue={state.fieldValues?.message || ''} // Ensure field repopulates
                 />
                 {state.errors?.message && <p className="mt-1 text-sm text-destructive">{state.errors.message[0]}</p>}
               </div>
 
-              <Button type="submit" className="w-full bg-accent text-accent-foreground hover:bg-accent/90 text-lg py-3" disabled={isSubmitting}>
-                {isSubmitting ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : 'Send Enquiry'}
-              </Button>
+              <FormSubmitButton />
             </form>
           </CardContent>
         </Card>
