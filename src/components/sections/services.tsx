@@ -1,3 +1,4 @@
+
 import { Container } from '@/components/container';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Scale, Briefcase, Users, ShieldCheck, Handshake, ArrowRight } from 'lucide-react';
@@ -68,7 +69,7 @@ export function ServicesSection() {
               </CardContent>
               <div className="p-6 pt-0">
                  <Button variant="link" asChild className="text-accent p-0 h-auto hover:text-accent/80">
-                    <Link href="#contact">Learn More <ArrowRight className="ml-2 h-4 w-4" /></Link>
+                    <Link href="/ai-assistant">Learn More <ArrowRight className="ml-2 h-4 w-4" /></Link>
                  </Button>
               </div>
             </Card>

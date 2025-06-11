@@ -1,3 +1,4 @@
+
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -20,7 +21,7 @@ export function HeroSection() {
                 <Link href="#services">Our Services</Link>
               </Button>
               <Button size="lg" variant="outline" asChild className="border-accent text-accent hover:bg-accent/10 shadow-lg transition-transform hover:scale-105">
-                <Link href="#contact">Contact Us</Link>
+                <Link href="/ai-assistant">Try AI Assistant</Link>
               </Button>
             </div>
           </div>
