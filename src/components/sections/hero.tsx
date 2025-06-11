@@ -27,11 +27,12 @@ export function HeroSection() {
           </div>
           <div className="relative h-80 md:h-[28rem] rounded-lg overflow-hidden shadow-2xl group">
             <Image
-              src="/images/kirk-hollingsworth.jpg"
+              src="/images/kirk.jpg"
               alt="Kirk Hollingsworth - FOGG Ventures"
               layout="fill"
               objectFit="cover"
               className="transform transition-transform duration-500 group-hover:scale-105"
+              data-ai-hint="diplomat professional"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-primary/50 to-transparent"></div>
           </div>
