@@ -22,9 +22,9 @@ import {
   SidebarInset,
 } from '@/components/ui/sidebar';
 
-import { Mail, Newspaper, Share2, CalendarDays, ImageUp, LayoutDashboard, Upload, Edit3 } from 'lucide-react';
+import { Mail, Newspaper, Share2, CalendarDays, ImageUp, LayoutDashboard, Upload, Edit3, LibraryBig, UploadCloud } from 'lucide-react';
 
-type AdminSection = 'dashboard' | 'mailingList' | 'blogPosts' | 'socialMedia' | 'schedule' | 'mediaLibrary';
+type AdminSection = 'dashboard' | 'mailingList' | 'blogPosts' | 'socialMedia' | 'schedule' | 'mediaLibrary' | 'knowledgeBase';
 
 export default function AdminPage() {
   const [activeSection, setActiveSection] = useState<AdminSection>('dashboard');
@@ -41,7 +41,7 @@ export default function AdminPage() {
             </CardHeader>
             <CardContent>
               <p className="text-lg text-muted-foreground">Select a section from the sidebar to manage your content and operations.</p>
-              <p className="mt-4">You can manage blog posts, social media content, your media library, mailing lists, and schedules from this central hub.</p>
+              <p className="mt-4">You can manage blog posts, social media content, your media library, mailing lists, schedules, and the AI knowledge base from this central hub.</p>
             </CardContent>
           </Card>
         );
@@ -140,7 +140,7 @@ export default function AdminPage() {
           <Card className="shadow-lg">
             <CardHeader>
                 <div className="flex items-center gap-3 mb-1">
-                    <Upload className="w-7 h-7 text-accent" />
+                    <ImageUp className="w-7 h-7 text-accent" />
                     <CardTitle className="text-2xl text-primary">Media Library</CardTitle>
                 </div>
                 <CardDescription>Upload, organize, and manage your website's images and documents.</CardDescription>
@@ -159,6 +159,40 @@ export default function AdminPage() {
                     <h3 className="mb-3 text-lg font-semibold text-foreground">Uploaded Media Gallery</h3>
                     <div className="p-4 border border-dashed rounded-md min-h-[100px] flex items-center justify-center bg-muted/50">
                         <p className="text-sm text-muted-foreground">(A gallery or list of uploaded media with management options would appear here.)</p>
+                    </div>
+                </div>
+            </CardContent>
+          </Card>
+        );
+      case 'knowledgeBase':
+        return (
+          <Card className="shadow-lg">
+            <CardHeader>
+                <div className="flex items-center gap-3 mb-1">
+                    <LibraryBig className="w-7 h-7 text-accent" />
+                    <CardTitle className="text-2xl text-primary">Manage Knowledge Base</CardTitle>
+                </div>
+                <CardDescription>Upload PDF files and other documents to enhance the AI assistant's knowledge.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+                <div>
+                    <Label htmlFor="knowledgeFile" className="font-medium">Upload New Document (PDF, TXT, DOCX)</Label>
+                    <Input 
+                      id="knowledgeFile" 
+                      type="file" 
+                      accept=".pdf,.txt,.docx" 
+                      className="mt-1 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" 
+                    />
+                </div>
+                <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
+                    <UploadCloud className="w-4 h-4 mr-2" />
+                    Upload Document to Knowledge Base
+                </Button>
+                <Separator className="my-6"/>
+                 <div>
+                    <h3 className="mb-3 text-lg font-semibold text-foreground">Uploaded Documents</h3>
+                    <div className="p-4 border border-dashed rounded-md min-h-[100px] flex items-center justify-center bg-muted/50">
+                        <p className="text-sm text-muted-foreground">(A list of uploaded documents with management options would appear here.)</p>
                     </div>
                 </div>
             </CardContent>
@@ -223,6 +257,12 @@ export default function AdminPage() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
+                  <SidebarMenuButton onClick={() => setActiveSection('knowledgeBase')} isActive={activeSection === 'knowledgeBase'} tooltip="Knowledge Base">
+                    <LibraryBig />
+                    <span>Knowledge Base</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
                   <SidebarMenuButton onClick={() => setActiveSection('mailingList')} isActive={activeSection === 'mailingList'} tooltip="Mailing List">
                     <Mail />
                     <span>Mailing List</span>
@@ -261,10 +301,12 @@ export default function AdminPage() {
               <div className="mb-6 flex items-center justify-between">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight text-primary font-headline">
-                        {activeSection.charAt(0).toUpperCase() + activeSection.slice(1).replace(/([A-Z])/g, ' $1')}
+                        {activeSection === 'knowledgeBase' ? 'Knowledge Base' : activeSection.charAt(0).toUpperCase() + activeSection.slice(1).replace(/([A-Z])/g, ' $1')}
                     </h1>
                     <p className="mt-1 text-md text-muted-foreground">
-                        {activeSection === 'dashboard' ? 'Overview of your admin panel.' : `Manage your ${activeSection.toLowerCase().replace(/([A-Z])/g, ' $1')}.`}
+                        {activeSection === 'dashboard' ? 'Overview of your admin panel.' : 
+                         activeSection === 'knowledgeBase' ? 'Upload and manage documents for the AI assistant.' :
+                         `Manage your ${activeSection.toLowerCase().replace(/([A-Z])/g, ' $1')}.`}
                     </p>
                 </div>
                 <SidebarTrigger className="md:hidden text-primary" />
@@ -280,3 +322,5 @@ export default function AdminPage() {
     </div>
   );
 }
+
+    
