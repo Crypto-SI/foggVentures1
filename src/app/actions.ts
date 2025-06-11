@@ -1,12 +1,7 @@
 
 'use server';
 
-import { z } from 'zod';
 import { contactFormSchema, type ContactFormValues } from '@/lib/schemas';
-
-// ContactFormValues is imported but also defined via infer here,
-// this is fine and common pattern if the schema is also used here.
-// If ContactFormValues were only needed for export, it would be imported from '@/lib/schemas'
 
 export interface ContactFormState {
   message: string;
