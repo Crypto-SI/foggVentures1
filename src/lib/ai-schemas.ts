@@ -28,3 +28,46 @@ export const PreliminaryAssessmentOutputSchema = z.discriminatedUnion("type", [
   })
 ]);
 export type PreliminaryAssessmentOutput = z.infer<typeof PreliminaryAssessmentOutputSchema>;
+
+
+// Schemas for AI Blog Post Generation
+export const BlogTopicSuggestionInputSchema = z.object({
+  // Potentially add context like existing categories or keywords later
+  language: z.string().default('English').describe('The desired language for the blog topics.')
+});
+export type BlogTopicSuggestionInput = z.infer<typeof BlogTopicSuggestionInputSchema>;
+
+export const SuggestedTopicSchema = z.object({
+  title: z.string().describe('A compelling blog post title.'),
+  justification: z.string().describe('A brief (1-sentence) justification for why this topic is relevant for Guyana business news.')
+});
+export type SuggestedTopic = z.infer<typeof SuggestedTopicSchema>;
+
+export const BlogTopicSuggestionOutputSchema = z.object({
+  suggestedTopics: z.array(SuggestedTopicSchema).length(3).describe('An array of 3 suggested blog topics with justifications.')
+});
+export type BlogTopicSuggestionOutput = z.infer<typeof BlogTopicSuggestionOutputSchema>;
+
+
+export const BlogKeyPointsInputSchema = z.object({
+  topic: z.string().min(5, {message: "Topic must be at least 5 characters."}).describe('The selected blog topic.')
+});
+export type BlogKeyPointsInput = z.infer<typeof BlogKeyPointsInputSchema>;
+
+export const BlogKeyPointsOutputSchema = z.object({
+  keyPoints: z.array(z.string()).length(5).describe('An array of 5 key talking points for the blog post.')
+});
+export type BlogKeyPointsOutput = z.infer<typeof BlogKeyPointsOutputSchema>;
+
+
+export const BlogPostDraftInputSchema = z.object({
+  topic: z.string().describe('The main topic of the blog post.'),
+  keyPoints: z.array(z.string()).min(1).describe('A list of key talking points to cover in the blog post.')
+});
+export type BlogPostDraftInput = z.infer<typeof BlogPostDraftInputSchema>;
+
+export const BlogPostDraftOutputSchema = z.object({
+  title: z.string().describe('A suitable title for the blog post.'),
+  content: z.string().describe('The generated content for the blog post, in markdown format.')
+});
+export type BlogPostDraftOutput = z.infer<typeof BlogPostDraftOutputSchema>;

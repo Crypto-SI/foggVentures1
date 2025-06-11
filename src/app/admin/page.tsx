@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
+import { AiBlogPostGenerator } from '@/components/admin/AiBlogPostGenerator'; // New import
 import {
   SidebarProvider,
   Sidebar,
@@ -22,14 +23,19 @@ import {
   SidebarInset,
 } from '@/components/ui/sidebar';
 
-import { Mail, Newspaper, Share2, CalendarDays, ImageUp, LayoutDashboard, Upload, Edit3, LibraryBig, UploadCloud } from 'lucide-react';
+import { Mail, Newspaper, Share2, CalendarDays, ImageUp, LayoutDashboard, Upload, Edit3, LibraryBig, UploadCloud, Wand2 } from 'lucide-react';
 
 type AdminSection = 'dashboard' | 'mailingList' | 'blogPosts' | 'socialMedia' | 'schedule' | 'mediaLibrary' | 'knowledgeBase';
 
 export default function AdminPage() {
   const [activeSection, setActiveSection] = useState<AdminSection>('dashboard');
+  const [showAiBlogGenerator, setShowAiBlogGenerator] = useState(false);
 
   const renderSection = () => {
+    if (activeSection === 'blogPosts' && showAiBlogGenerator) {
+      return <AiBlogPostGenerator onComplete={() => setShowAiBlogGenerator(false)} />;
+    }
+
     switch (activeSection) {
       case 'dashboard':
         return (
@@ -49,15 +55,21 @@ export default function AdminPage() {
         return (
           <Card className="shadow-lg">
             <CardHeader>
-              <div className="flex items-center gap-3 mb-1">
-                <Newspaper className="w-7 h-7 text-accent" />
-                <CardTitle className="text-2xl text-primary">Manage Blog Posts</CardTitle>
+              <div className="flex items-center justify-between gap-3 mb-1">
+                <div className="flex items-center gap-3">
+                    <Newspaper className="w-7 h-7 text-accent" />
+                    <CardTitle className="text-2xl text-primary">Manage Blog Posts</CardTitle>
+                </div>
+                <Button onClick={() => setShowAiBlogGenerator(true)} variant="outline" className="border-accent text-accent hover:bg-accent/10 hover:text-accent">
+                  <Wand2 className="w-4 h-4 mr-2" />
+                  Generate with AI
+                </Button>
               </div>
-              <CardDescription>Create, edit, and publish engaging blog articles for your audience.</CardDescription>
+              <CardDescription>Create, edit, and publish engaging blog articles for your audience. Or use the AI assistant to help draft posts.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div>
-                <h3 className="mb-4 text-lg font-semibold text-foreground">Create New Blog Post</h3>
+                <h3 className="mb-4 text-lg font-semibold text-foreground">Create New Blog Post Manually</h3>
                 <div className="space-y-4">
                   <div>
                     <Label htmlFor="blogTitle" className="font-medium">Title</Label>
@@ -237,6 +249,14 @@ export default function AdminPage() {
         );
     }
   };
+  
+  const handleSidebarClick = (section: AdminSection) => {
+    if (section === 'blogPosts' && showAiBlogGenerator) {
+      setShowAiBlogGenerator(false); // If AI generator is open, clicking Blog Posts again should close it and show manual
+    }
+    setActiveSection(section);
+  }
+
 
   return (
     <div className="flex flex-col min-h-screen bg-muted/40">
@@ -251,43 +271,47 @@ export default function AdminPage() {
             <ShadSidebarContent className="flex-grow">
               <SidebarMenu>
                 <SidebarMenuItem>
-                  <SidebarMenuButton onClick={() => setActiveSection('dashboard')} isActive={activeSection === 'dashboard'} tooltip="Dashboard">
+                  <SidebarMenuButton onClick={() => handleSidebarClick('dashboard')} isActive={activeSection === 'dashboard' && !showAiBlogGenerator} tooltip="Dashboard">
                     <LayoutDashboard />
                     <span>Dashboard</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton onClick={() => setActiveSection('knowledgeBase')} isActive={activeSection === 'knowledgeBase'} tooltip="Knowledge Base">
+                  <SidebarMenuButton onClick={() => handleSidebarClick('knowledgeBase')} isActive={activeSection === 'knowledgeBase' && !showAiBlogGenerator} tooltip="Knowledge Base">
                     <LibraryBig />
                     <span>Knowledge Base</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton onClick={() => setActiveSection('mailingList')} isActive={activeSection === 'mailingList'} tooltip="Mailing List">
+                  <SidebarMenuButton onClick={() => handleSidebarClick('mailingList')} isActive={activeSection === 'mailingList' && !showAiBlogGenerator} tooltip="Mailing List">
                     <Mail />
                     <span>Mailing List</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton onClick={() => setActiveSection('blogPosts')} isActive={activeSection === 'blogPosts'} tooltip="Blog Posts">
+                  <SidebarMenuButton 
+                    onClick={() => handleSidebarClick('blogPosts')} 
+                    isActive={activeSection === 'blogPosts'} 
+                    tooltip="Blog Posts"
+                  >
                     <Newspaper />
                     <span>Blog Posts</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton onClick={() => setActiveSection('socialMedia')} isActive={activeSection === 'socialMedia'} tooltip="Social Media">
+                  <SidebarMenuButton onClick={() => handleSidebarClick('socialMedia')} isActive={activeSection === 'socialMedia' && !showAiBlogGenerator} tooltip="Social Media">
                     <Share2 />
                     <span>Social Media</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton onClick={() => setActiveSection('schedule')} isActive={activeSection === 'schedule'} tooltip="Schedule">
+                  <SidebarMenuButton onClick={() => handleSidebarClick('schedule')} isActive={activeSection === 'schedule' && !showAiBlogGenerator} tooltip="Schedule">
                     <CalendarDays />
                     <span>Schedule</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton onClick={() => setActiveSection('mediaLibrary')} isActive={activeSection === 'mediaLibrary'} tooltip="Media Library">
+                  <SidebarMenuButton onClick={() => handleSidebarClick('mediaLibrary')} isActive={activeSection === 'mediaLibrary' && !showAiBlogGenerator} tooltip="Media Library">
                     <ImageUp />
                     <span>Media Library</span>
                   </SidebarMenuButton>
@@ -301,11 +325,15 @@ export default function AdminPage() {
               <div className="mb-6 flex items-center justify-between">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight text-primary font-headline">
-                        {activeSection === 'knowledgeBase' ? 'Knowledge Base' : activeSection.charAt(0).toUpperCase() + activeSection.slice(1).replace(/([A-Z])/g, ' $1')}
+                        { (activeSection === 'blogPosts' && showAiBlogGenerator) ? "AI Blog Post Generator" :
+                          activeSection === 'knowledgeBase' ? 'Knowledge Base' : 
+                          activeSection.charAt(0).toUpperCase() + activeSection.slice(1).replace(/([A-Z])/g, ' $1')
+                        }
                     </h1>
                     <p className="mt-1 text-md text-muted-foreground">
-                        {activeSection === 'dashboard' ? 'Overview of your admin panel.' : 
-                         activeSection === 'knowledgeBase' ? 'Upload and manage documents for the AI assistant.' :
+                        { (activeSection === 'blogPosts' && showAiBlogGenerator) ? "Follow the steps to generate a new blog post with AI assistance." :
+                          activeSection === 'dashboard' ? 'Overview of your admin panel.' : 
+                          activeSection === 'knowledgeBase' ? 'Upload and manage documents for the AI assistant.' :
                          `Manage your ${activeSection.toLowerCase().replace(/([A-Z])/g, ' $1')}.`}
                     </p>
                 </div>
@@ -322,5 +350,3 @@ export default function AdminPage() {
     </div>
   );
 }
-
-    
