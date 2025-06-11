@@ -1,6 +1,6 @@
 
 import Link from 'next/link';
-import Image from 'next/image'; // Added Image import
+import Image from 'next/image';
 import { Container } from '@/components/container';
 import { Button } from '@/components/ui/button'; 
 
@@ -8,6 +8,7 @@ export function Header() {
   const navItems = [
     { name: 'About', href: '/#about' },
     { name: 'Services', href: '/#services' },
+    { name: 'FOGG Forecasts', href: '/blog'},
     { name: 'AI Assist', href: '/ai-assistant' },
   ];
 
@@ -20,7 +21,7 @@ export function Header() {
             alt="FOGG Ventures Icon"
             width={36} 
             height={36}
-            className="h-9 w-9" // Increased size
+            className="h-9 w-9"
           />
           <span className="text-xl font-bold text-primary font-headline">
             FOGG Ventures
