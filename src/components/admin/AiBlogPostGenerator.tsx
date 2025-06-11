@@ -166,7 +166,14 @@ export function AiBlogPostGenerator({ onComplete }: AiBlogPostGeneratorProps) {
               <CardDescription>Choose one of the AI-suggested topics or provide your own.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              <RadioGroup value={selectedTopicValue} onValueChange={setSelectedTopicValue} disabled={isLoading || !!customTopic.trim()}>
+              <RadioGroup 
+                value={customTopic.trim() ? '' : selectedTopicValue} // Clear selection if custom topic has value
+                onValueChange={(value) => {
+                  setSelectedTopicValue(value);
+                  if (value) setCustomTopic(''); // Clear custom topic if radio is selected
+                }}
+                disabled={isLoading || !!customTopic.trim()}
+              >
                 {suggestedTopics.map((topic, index) => (
                   <div key={index} className="flex items-start space-x-2 p-3 border rounded-md hover:bg-muted/50 transition-colors">
                     <RadioGroupItem value={topic.title} id={`topic-${index}`} />
