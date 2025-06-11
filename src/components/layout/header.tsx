@@ -1,12 +1,14 @@
+
 import Link from 'next/link';
 import { Container } from '@/components/container';
-import { Button } from '@/components/ui/button'; // Using Button for consistent styling if needed for nav items
-import { ShieldEllipsis } from 'lucide-react'; // Example icon, replace if needed
+import { Button } from '@/components/ui/button'; 
+import { ShieldEllipsis } from 'lucide-react'; 
 
 export function Header() {
   const navItems = [
     { name: 'About', href: '#about' },
     { name: 'Services', href: '#services' },
+    { name: 'AI Assist', href: '#ai-assistant' },
     { name: 'Contact', href: '#contact' },
   ];
 
@@ -19,13 +21,13 @@ export function Header() {
             FOGG Ventures
           </span>
         </Link>
-        <nav className="hidden md:flex items-center space-x-2 lg:space-x-4">
+        <nav className="hidden md:flex items-center space-x-1 lg:space-x-2">
           {navItems.map((item) => (
-            <Button key={item.name} variant="ghost" asChild className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+            <Button key={item.name} variant="ghost" asChild className="text-sm font-medium text-foreground hover:text-primary transition-colors px-3 py-2">
               <Link href={item.href}>{item.name}</Link>
             </Button>
           ))}
-           <Button asChild className="bg-accent text-accent-foreground hover:bg-accent/90">
+           <Button asChild className="bg-accent text-accent-foreground hover:bg-accent/90 ml-2">
              <Link href="#contact">Book Consultation</Link>
            </Button>
         </nav>
