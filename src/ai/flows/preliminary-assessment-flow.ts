@@ -18,7 +18,7 @@ export async function getPreliminaryAssessment(input: PreliminaryAssessmentInput
     console.error("Invalid input for preliminary assessment:", validatedInput.error);
     // Fallback if input is invalid based on server-side check
      return {
-        type: 'assessment', // Or clarification_needed if that makes more sense for input error
+        type: 'assessment',
         suggestions: [{
             strategy: "Input Error",
             successChance: 0,
@@ -67,12 +67,33 @@ const preliminaryAssessmentFlow = ai.defineFlow(
     outputSchema: PreliminaryAssessmentOutputSchema,
   },
   async (input) => {
-    const {output: rawOutput} = await prompt(input);
+    let rawOutput;
+    const defaultDisclaimerOnError = "This is an automated preliminary assessment. The strategies and success chances are estimates provided by an AI and are not binding. For a formal consultation and detailed analysis, please consider reaching out to FOGG Ventures directly. No information shared with this AI assistant is saved or stored by FOGG Ventures. An error occurred while processing your request.";
+
+    try {
+      const result = await prompt(input);
+      rawOutput = result.output;
+      if (!rawOutput) {
+        console.error('Genkit prompt returned successfully but its output was null/undefined. Input:', input);
+        // This will be caught by the !rawOutput || !rawOutput.type check below
+      }
+    } catch (e: any) {
+      console.error("Error calling Genkit prompt in preliminaryAssessmentFlow. Input:", input, "Error:", e);
+      // Force a fallback to clarification if the prompt itself fails
+      // This ensures we return a valid PreliminaryAssessmentOutput structure
+      return {
+        type: 'clarification_needed',
+        followUpQuestions: ["I encountered an issue processing your request at this time. Could you try rephrasing or try again in a few moments?"],
+        originalInput: input.userInput,
+        disclaimer: defaultDisclaimerOnError,
+      };
+    }
     
     const defaultDisclaimer = "This is an automated preliminary assessment. The strategies and success chances are estimates provided by an AI and are not binding. For a formal consultation and detailed analysis, please consider reaching out to FOGG Ventures directly. No information shared with this AI assistant is saved or stored by FOGG Ventures.";
 
     if (!rawOutput || !rawOutput.type) {
       // Fallback if LLM fails to produce structured output or type is missing
+      console.warn('Raw output from LLM was missing or lacked a type. Input:', input, 'RawOutput:', rawOutput);
       return {
         type: 'clarification_needed',
         followUpQuestions: ["I need a bit more information to help you effectively. Could you please provide more details about your specific needs or objectives in Guyana?"],
@@ -85,7 +106,7 @@ const preliminaryAssessmentFlow = ai.defineFlow(
       const suggestions = (rawOutput.suggestions && rawOutput.suggestions.length > 0)
         ? rawOutput.suggestions.map(s => ({
             strategy: s.strategy || "Strategy details unavailable.",
-            successChance: typeof s.successChance === 'number' ? s.successChance : 0, // Ensure successChance is a number
+            successChance: typeof s.successChance === 'number' ? s.successChance : 0, 
             reasoning: s.reasoning || "Reasoning unavailable."
           }))
         : [{
@@ -105,9 +126,10 @@ const preliminaryAssessmentFlow = ai.defineFlow(
       return {
         type: 'clarification_needed',
         followUpQuestions: questions,
-        originalInput: rawOutput.originalInput || input.userInput, // Prefer LLM's originalInput, fallback to current input
+        originalInput: rawOutput.originalInput || input.userInput, 
         disclaimer: rawOutput.disclaimer || defaultDisclaimer,
       };
     }
   }
 );
+
