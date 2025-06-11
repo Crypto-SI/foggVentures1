@@ -20,7 +20,7 @@ export function Header() {
             alt="FOGG Ventures Icon"
             width={28}
             height={28}
-            className="h-7 w-7" // Keep consistent sizing with previous icon
+            className="h-7 w-7" // Increased size
           />
           <span className="text-xl font-bold text-primary font-headline">
             FOGG Ventures
