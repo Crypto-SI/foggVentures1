@@ -1,149 +1,281 @@
 
+'use client';
+
+import { useState } from 'react';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
-import { Container } from '@/components/container';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
-import { Upload, Edit3, Share2 } from 'lucide-react';
+import {
+  SidebarProvider,
+  Sidebar,
+  SidebarTrigger,
+  SidebarContent as ShadSidebarContent,
+  SidebarHeader as ShadSidebarHeader,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuButton,
+  SidebarInset,
+} from '@/components/ui/sidebar';
+
+import { Mail, Newspaper, Share2, CalendarDays, ImageUp, LayoutDashboard, Upload, Edit3 } from 'lucide-react';
+
+type AdminSection = 'dashboard' | 'mailingList' | 'blogPosts' | 'socialMedia' | 'schedule' | 'mediaLibrary';
 
 export default function AdminPage() {
-  return (
-    <div className="flex flex-col min-h-screen">
-      <Header />
-      <main className="flex-grow py-12 bg-muted/40">
-        <Container>
-          <div className="mb-12 text-center">
-            <h1 className="text-4xl font-bold tracking-tight text-primary font-headline">Admin Dashboard</h1>
-            <p className="mt-3 text-lg text-muted-foreground max-w-xl mx-auto">
-              Manage blog articles, social media content, and your media library from this central hub.
-            </p>
-          </div>
+  const [activeSection, setActiveSection] = useState<AdminSection>('dashboard');
 
-          <div className="grid gap-8 md:grid-cols-1 lg:grid-cols-2 items-start">
-            
-            <Card className="shadow-lg">
-              <CardHeader>
-                <div className="flex items-center gap-3 mb-1">
-                  <Edit3 className="w-7 h-7 text-accent" />
-                  <CardTitle className="text-2xl text-primary">Manage Blog Posts</CardTitle>
-                </div>
-                <CardDescription>Create, edit, and publish engaging blog articles for your audience.</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div>
-                  <h3 className="mb-4 text-lg font-semibold text-foreground">Create New Blog Post</h3>
-                  <div className="space-y-4">
-                    <div>
-                      <Label htmlFor="blogTitle" className="font-medium">Title</Label>
-                      <Input id="blogTitle" placeholder="Enter blog post title" className="mt-1" />
-                    </div>
-                    <div>
-                      <Label htmlFor="blogContent" className="font-medium">Content</Label>
-                      <Textarea id="blogContent" placeholder="Write your blog post here..." rows={6} className="mt-1" />
-                    </div>
-                    <div>
-                      <Label htmlFor="blogImage" className="font-medium">Featured Image</Label>
-                      <Input id="blogImage" type="file" className="mt-1 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
-                    </div>
-                    <div className="flex gap-3 pt-2">
-                        <Button className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90">
-                            <Edit3 className="w-4 h-4 mr-2" />
-                            Save Draft
-                        </Button>
-                        <Button variant="outline" className="flex-1 border-accent text-accent hover:bg-accent/10 hover:text-accent">
-                            Publish Post
-                        </Button>
-                    </div>
+  const renderSection = () => {
+    switch (activeSection) {
+      case 'dashboard':
+        return (
+          <Card className="shadow-lg">
+            <CardHeader>
+              <CardTitle className="text-2xl text-primary flex items-center">
+                <LayoutDashboard className="w-7 h-7 text-accent mr-3" /> Welcome to the Admin Dashboard
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-lg text-muted-foreground">Select a section from the sidebar to manage your content and operations.</p>
+              <p className="mt-4">You can manage blog posts, social media content, your media library, mailing lists, and schedules from this central hub.</p>
+            </CardContent>
+          </Card>
+        );
+      case 'blogPosts':
+        return (
+          <Card className="shadow-lg">
+            <CardHeader>
+              <div className="flex items-center gap-3 mb-1">
+                <Newspaper className="w-7 h-7 text-accent" />
+                <CardTitle className="text-2xl text-primary">Manage Blog Posts</CardTitle>
+              </div>
+              <CardDescription>Create, edit, and publish engaging blog articles for your audience.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div>
+                <h3 className="mb-4 text-lg font-semibold text-foreground">Create New Blog Post</h3>
+                <div className="space-y-4">
+                  <div>
+                    <Label htmlFor="blogTitle" className="font-medium">Title</Label>
+                    <Input id="blogTitle" placeholder="Enter blog post title" className="mt-1" />
+                  </div>
+                  <div>
+                    <Label htmlFor="blogContent" className="font-medium">Content</Label>
+                    <Textarea id="blogContent" placeholder="Write your blog post here..." rows={6} className="mt-1" />
+                  </div>
+                  <div>
+                    <Label htmlFor="blogImage" className="font-medium">Featured Image</Label>
+                    <Input id="blogImage" type="file" className="mt-1 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
+                  </div>
+                  <div className="flex gap-3 pt-2">
+                      <Button className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90">
+                          <Edit3 className="w-4 h-4 mr-2" />
+                          Save Draft
+                      </Button>
+                      <Button variant="outline" className="flex-1 border-accent text-accent hover:bg-accent/10 hover:text-accent">
+                          Publish Post
+                      </Button>
                   </div>
                 </div>
-                <Separator />
-                <div>
-                    <h3 className="mb-3 text-lg font-semibold text-foreground">Existing Posts</h3>
-                    <p className="text-sm text-muted-foreground"> (A list or table of existing blog posts with edit/delete options would appear here.)</p>
-                    {/* Placeholder for list of existing posts */}
+              </div>
+              <Separator />
+              <div>
+                  <h3 className="mb-3 text-lg font-semibold text-foreground">Existing Posts</h3>
+                  <p className="text-sm text-muted-foreground"> (A list or table of existing blog posts with edit/delete options would appear here.)</p>
+              </div>
+            </CardContent>
+          </Card>
+        );
+      case 'socialMedia':
+        return (
+          <Card className="shadow-lg">
+            <CardHeader>
+                <div className="flex items-center gap-3 mb-1">
+                    <Share2 className="w-7 h-7 text-accent" />
+                    <CardTitle className="text-2xl text-primary">Manage Social Media</CardTitle>
                 </div>
-              </CardContent>
-            </Card>
-
-            <div className="space-y-8">
-                <Card className="shadow-lg">
-                <CardHeader>
-                    <div className="flex items-center gap-3 mb-1">
-                        <Share2 className="w-7 h-7 text-accent" />
-                        <CardTitle className="text-2xl text-primary">Manage Social Media</CardTitle>
-                    </div>
-                    <CardDescription>Draft, schedule, and publish updates across your social media channels.</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-6">
+                <CardDescription>Draft, schedule, and publish updates across your social media channels.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+                <div>
+                <h3 className="mb-4 text-lg font-semibold text-foreground">Create New Social Post</h3>
+                <div className="space-y-4">
                     <div>
-                    <h3 className="mb-4 text-lg font-semibold text-foreground">Create New Social Post</h3>
-                    <div className="space-y-4">
-                        <div>
-                        <Label htmlFor="socialPlatform" className="font-medium">Platform</Label>
-                         <select id="socialPlatform" className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 mt-1">
-                            <option value="">Select Platform...</option>
-                            <option value="twitter">X (Twitter)</option>
-                            <option value="linkedin">LinkedIn</option>
-                            <option value="facebook">Facebook</option>
-                        </select>
-                        </div>
-                        <div>
-                        <Label htmlFor="socialContent" className="font-medium">Content</Label>
-                        <Textarea id="socialContent" placeholder="Draft your social media post..." rows={4} className="mt-1" />
-                        </div>
-                        <div>
-                        <Label htmlFor="socialMediaUpload" className="font-medium">Attach Media (Image/Video)</Label>
-                        <Input id="socialMediaUpload" type="file" className="mt-1 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
-                        </div>
-                        <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90 pt-2">
-                            <Share2 className="w-4 h-4 mr-2" />
-                            Schedule Post
-                        </Button>
+                    <Label htmlFor="socialPlatform" className="font-medium">Platform</Label>
+                     <select id="socialPlatform" className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 mt-1">
+                        <option value="">Select Platform...</option>
+                        <option value="twitter">X (Twitter)</option>
+                        <option value="linkedin">LinkedIn</option>
+                        <option value="facebook">Facebook</option>
+                    </select>
                     </div>
-                    </div>
-                     <Separator />
                     <div>
-                        <h3 className="mb-3 text-lg font-semibold text-foreground">Scheduled Posts</h3>
-                        <p className="text-sm text-muted-foreground">(A list or calendar of scheduled social media posts would appear here.)</p>
+                    <Label htmlFor="socialContent" className="font-medium">Content</Label>
+                    <Textarea id="socialContent" placeholder="Draft your social media post..." rows={4} className="mt-1" />
                     </div>
-                </CardContent>
-                </Card>
-
-                <Card className="shadow-lg">
-                <CardHeader>
-                    <div className="flex items-center gap-3 mb-1">
-                        <Upload className="w-7 h-7 text-accent" />
-                        <CardTitle className="text-2xl text-primary">Media Library</CardTitle>
-                    </div>
-                    <CardDescription>Upload, organize, and manage your website's images and documents.</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
                     <div>
-                        <Label htmlFor="mediaFile" className="font-medium">Upload New Media</Label>
-                        <Input id="mediaFile" type="file" className="mt-1 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
+                    <Label htmlFor="socialMediaUpload" className="font-medium">Attach Media (Image/Video)</Label>
+                    <Input id="socialMediaUpload" type="file" className="mt-1 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
                     </div>
-                    <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
-                        <Upload className="w-4 h-4 mr-2" />
-                        Upload File
+                    <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90 pt-2">
+                        <Share2 className="w-4 h-4 mr-2" />
+                        Schedule Post
                     </Button>
-                    <Separator className="my-6"/>
-                     <div>
-                        <h3 className="mb-3 text-lg font-semibold text-foreground">Uploaded Media Gallery</h3>
-                        <div className="p-4 border border-dashed rounded-md min-h-[100px] flex items-center justify-center bg-muted/50">
-                            <p className="text-sm text-muted-foreground">(A gallery or list of uploaded media with management options would appear here.)</p>
-                        </div>
+                </div>
+                </div>
+                 <Separator />
+                <div>
+                    <h3 className="mb-3 text-lg font-semibold text-foreground">Scheduled Posts</h3>
+                    <p className="text-sm text-muted-foreground">(A list or calendar of scheduled social media posts would appear here.)</p>
+                </div>
+            </CardContent>
+          </Card>
+        );
+      case 'mediaLibrary':
+        return (
+          <Card className="shadow-lg">
+            <CardHeader>
+                <div className="flex items-center gap-3 mb-1">
+                    <Upload className="w-7 h-7 text-accent" />
+                    <CardTitle className="text-2xl text-primary">Media Library</CardTitle>
+                </div>
+                <CardDescription>Upload, organize, and manage your website's images and documents.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+                <div>
+                    <Label htmlFor="mediaFile" className="font-medium">Upload New Media</Label>
+                    <Input id="mediaFile" type="file" className="mt-1 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
+                </div>
+                <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
+                    <Upload className="w-4 h-4 mr-2" />
+                    Upload File
+                </Button>
+                <Separator className="my-6"/>
+                 <div>
+                    <h3 className="mb-3 text-lg font-semibold text-foreground">Uploaded Media Gallery</h3>
+                    <div className="p-4 border border-dashed rounded-md min-h-[100px] flex items-center justify-center bg-muted/50">
+                        <p className="text-sm text-muted-foreground">(A gallery or list of uploaded media with management options would appear here.)</p>
                     </div>
-                </CardContent>
-                </Card>
-            </div>
+                </div>
+            </CardContent>
+          </Card>
+        );
+      case 'mailingList':
+        return (
+          <Card className="shadow-lg">
+            <CardHeader>
+                <div className="flex items-center gap-3 mb-1">
+                    <Mail className="w-7 h-7 text-accent" />
+                    <CardTitle className="text-2xl text-primary">Manage Mailing List</CardTitle>
+                </div>
+                <CardDescription>View subscribers, manage lists, and draft email campaigns.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-muted-foreground">Placeholder for mailing list management tools (e.g., subscriber list, create campaign button, view past campaigns).</p>
+            </CardContent>
+          </Card>
+        );
+      case 'schedule':
+        return (
+          <Card className="shadow-lg">
+            <CardHeader>
+                <div className="flex items-center gap-3 mb-1">
+                    <CalendarDays className="w-7 h-7 text-accent" />
+                    <CardTitle className="text-2xl text-primary">Manage Schedule</CardTitle>
+                </div>
+                <CardDescription>View and manage scheduled content, appointments, or other events.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-muted-foreground">Placeholder for a scheduling calendar or list of scheduled items (e.g., upcoming social media posts, blog release dates).</p>
+            </CardContent>
+          </Card>
+        );
+      default:
+        return (
+          <Card className="shadow-lg">
+            <CardHeader><CardTitle>Error</CardTitle></CardHeader>
+            <CardContent><p>Selected section not found. Please choose from the sidebar.</p></CardContent>
+          </Card>
+        );
+    }
+  };
 
-          </div>
-        </Container>
-      </main>
+  return (
+    <div className="flex flex-col min-h-screen bg-muted/40">
+      <Header />
+      <SidebarProvider defaultOpen={true}>
+        <div className="flex flex-1 h-[calc(100vh-theme(spacing.16))]"> {/* Adjust height to account for header, Footer is separate */}
+          <Sidebar collapsible="icon" className="h-full">
+            <ShadSidebarHeader className="p-2 border-b border-sidebar-border">
+              <h2 className="text-lg font-semibold text-sidebar-foreground text-center group-data-[collapsible=icon]:hidden">Admin Menu</h2>
+              <LayoutDashboard className="h-6 w-6 mx-auto text-sidebar-primary group-data-[collapsible=icon]:block hidden" />
+            </ShadSidebarHeader>
+            <ShadSidebarContent className="flex-grow">
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton onClick={() => setActiveSection('dashboard')} isActive={activeSection === 'dashboard'} tooltip="Dashboard">
+                    <LayoutDashboard />
+                    <span>Dashboard</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton onClick={() => setActiveSection('mailingList')} isActive={activeSection === 'mailingList'} tooltip="Mailing List">
+                    <Mail />
+                    <span>Mailing List</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton onClick={() => setActiveSection('blogPosts')} isActive={activeSection === 'blogPosts'} tooltip="Blog Posts">
+                    <Newspaper />
+                    <span>Blog Posts</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton onClick={() => setActiveSection('socialMedia')} isActive={activeSection === 'socialMedia'} tooltip="Social Media">
+                    <Share2 />
+                    <span>Social Media</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton onClick={() => setActiveSection('schedule')} isActive={activeSection === 'schedule'} tooltip="Schedule">
+                    <CalendarDays />
+                    <span>Schedule</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton onClick={() => setActiveSection('mediaLibrary')} isActive={activeSection === 'mediaLibrary'} tooltip="Media Library">
+                    <ImageUp />
+                    <span>Media Library</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </ShadSidebarContent>
+          </Sidebar>
+
+          <SidebarInset className="flex-1 overflow-y-auto">
+            <main className="py-8 px-4 sm:px-6 lg:px-8">
+              <div className="mb-6 flex items-center justify-between">
+                <div>
+                    <h1 className="text-3xl font-bold tracking-tight text-primary font-headline">
+                        {activeSection.charAt(0).toUpperCase() + activeSection.slice(1).replace(/([A-Z])/g, ' $1')}
+                    </h1>
+                    <p className="mt-1 text-md text-muted-foreground">
+                        {activeSection === 'dashboard' ? 'Overview of your admin panel.' : `Manage your ${activeSection.toLowerCase().replace(/([A-Z])/g, ' $1')}.`}
+                    </p>
+                </div>
+                <SidebarTrigger className="md:hidden text-primary" />
+              </div>
+              <div className="max-w-5xl mx-auto"> {/* Constrain width of content area */}
+                {renderSection()}
+              </div>
+            </main>
+          </SidebarInset>
+        </div>
+      </SidebarProvider>
       <Footer />
     </div>
   );
