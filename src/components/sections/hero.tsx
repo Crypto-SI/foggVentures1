@@ -18,7 +18,7 @@ export function HeroSection() {
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
               <Button size="lg" asChild className="bg-accent text-accent-foreground hover:bg-accent/90 shadow-lg transition-transform hover:scale-105">
-                <Link href="#services">Our Services</Link>
+                <Link href="/#services">Our Services</Link>
               </Button>
               <Button size="lg" variant="outline" asChild className="border-accent text-accent hover:bg-accent/10 shadow-lg transition-transform hover:scale-105">
                 <Link href="/ai-assistant">Try AI Assistant</Link>
@@ -27,12 +27,11 @@ export function HeroSection() {
           </div>
           <div className="relative h-80 md:h-[28rem] rounded-lg overflow-hidden shadow-2xl group">
             <Image
-              src="https://placehold.co/600x400.png"
-              alt="Kirk Hollingsworth - Former British Diplomat"
+              src="/images/kirk-hollingsworth.jpg"
+              alt="Kirk Hollingsworth - FOGG Ventures"
               layout="fill"
               objectFit="cover"
               className="transform transition-transform duration-500 group-hover:scale-105"
-              data-ai-hint="professional diplomat portrait"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-primary/50 to-transparent"></div>
           </div>

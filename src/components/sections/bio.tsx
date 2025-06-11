@@ -9,12 +9,11 @@ export function BioSection() {
         <div className="grid md:grid-cols-5 gap-12 items-center">
           <div className="md:col-span-2 relative h-96 md:h-[30rem] w-full rounded-lg overflow-hidden shadow-xl group">
              <Image
-                src="https://placehold.co/400x500.png"
-                alt="Kirk Hollingsworth - Diplomat Profile"
+                src="/images/kirk-hollingsworth.jpg"
+                alt="Kirk Hollingsworth"
                 layout="fill"
                 objectFit="cover"
                 className="transform transition-transform duration-500 group-hover:scale-105"
-                data-ai-hint="diplomat profile formal"
               />
           </div>
           <div className="md:col-span-3">
