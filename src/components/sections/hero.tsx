@@ -11,7 +11,7 @@ export function HeroSection() {
         <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
           <div className="text-center md:text-left">
             <h1 className="font-headline text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight">
-              Kirk Hollingsworth
+              FOGG Ventures
             </h1>
             <p className="mt-4 text-lg sm:text-xl lg:text-2xl text-primary-foreground/80">
               Expert Navigation in Guyana&apos;s Governmental and Business Landscape.
@@ -25,16 +25,15 @@ export function HeroSection() {
               </Button>
             </div>
           </div>
-          <div className="relative h-80 md:h-[28rem] rounded-lg overflow-hidden shadow-2xl group">
+          <div className="relative w-56 h-56 md:w-64 md:h-64 mx-auto md:ml-auto md:mr-0 rounded-lg overflow-hidden shadow-2xl flex items-center justify-center border-2 border-accent/20 bg-primary-foreground/5">
             <Image
-              src="/images/kirk.jpg"
-              alt="Kirk Hollingsworth - FOGG Ventures"
+              src="https://placehold.co/200x200.png"
+              alt="FOGG Ventures Logo Placeholder"
               layout="fill"
-              objectFit="cover"
-              className="transform transition-transform duration-500 group-hover:scale-105"
-              data-ai-hint="diplomat professional"
+              objectFit="contain"
+              className="p-3"
+              data-ai-hint="company logo"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-primary/50 to-transparent"></div>
           </div>
         </div>
       </Container>
