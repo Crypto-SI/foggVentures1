@@ -10,7 +10,7 @@ export function HeroSection() {
         <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
           <div className="text-center md:text-left">
             <h1 className="font-headline text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight">
-              Arthur Kingsley
+              Kirk Hollingsworth
             </h1>
             <p className="mt-4 text-lg sm:text-xl lg:text-2xl text-primary-foreground/80">
               Expert Navigation in Guyana&apos;s Governmental and Business Landscape.
@@ -27,7 +27,7 @@ export function HeroSection() {
           <div className="relative h-80 md:h-[28rem] rounded-lg overflow-hidden shadow-2xl group">
             <Image
               src="https://placehold.co/600x400.png"
-              alt="Arthur Kingsley - Former British Diplomat"
+              alt="Kirk Hollingsworth - Former British Diplomat"
               layout="fill"
               objectFit="cover"
               className="transform transition-transform duration-500 group-hover:scale-105"

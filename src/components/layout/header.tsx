@@ -16,7 +16,7 @@ export function Header() {
         <Link href="#" className="flex items-center gap-2">
           <ShieldEllipsis className="h-7 w-7 text-primary" />
           <span className="text-xl font-bold text-primary font-headline">
-            GuyanaGovConnect
+            FOGG Ventures
           </span>
         </Link>
         <nav className="hidden md:flex items-center space-x-2 lg:space-x-4">

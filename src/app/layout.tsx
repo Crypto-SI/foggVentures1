@@ -3,7 +3,7 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
-  title: 'GuyanaGovConnect',
+  title: 'FOGG Ventures',
   description: 'High-level consultancy services in Guyana by a former British diplomat.',
 };
 
