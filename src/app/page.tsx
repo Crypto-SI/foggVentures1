@@ -5,7 +5,7 @@ import { HeroSection } from '@/components/sections/hero';
 import { BioSection } from '@/components/sections/bio';
 import { ServicesSection } from '@/components/sections/services';
 import { AiAssistantSection } from '@/components/sections/ai-assistant-section';
-import { ContactSection } from '@/components/sections/contact';
+// Removed ContactSection import
 
 export default function Home() {
   return (
@@ -16,7 +16,7 @@ export default function Home() {
         <BioSection />
         <ServicesSection />
         <AiAssistantSection />
-        <ContactSection />
+        {/* Removed ContactSection component */}
       </main>
       <Footer />
     </div>

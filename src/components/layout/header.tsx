@@ -9,7 +9,7 @@ export function Header() {
     { name: 'About', href: '#about' },
     { name: 'Services', href: '#services' },
     { name: 'AI Assist', href: '#ai-assistant' },
-    { name: 'Contact', href: '#contact' },
+    // { name: 'Contact', href: '#contact' }, // Removed Contact link
   ];
 
   return (
@@ -27,9 +27,11 @@ export function Header() {
               <Link href={item.href}>{item.name}</Link>
             </Button>
           ))}
+           {/* Removed Book Consultation Button
            <Button asChild className="bg-accent text-accent-foreground hover:bg-accent/90 ml-2">
              <Link href="#contact">Book Consultation</Link>
-           </Button>
+           </Button> 
+           */}
         </nav>
         {/* TODO: Add mobile menu if needed */}
       </Container>

@@ -1,8 +1,8 @@
 
 import { Container } from '@/components/container';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import Link from 'next/link';
+// import { Button } from '@/components/ui/button'; // Button no longer used here
+// import Link from 'next/link'; // Link no longer used here
 import { BrainCircuit, MessageCircle, ShieldCheck } from 'lucide-react';
 
 export function AiAssistantSection() {
@@ -65,9 +65,11 @@ export function AiAssistantSection() {
             <p className="text-lg text-foreground/80 mb-4">
                 This AI tool is currently under development. Check back soon to try it out!
             </p>
+          {/* Removed "Contact Us Directly" button
           <Button size="lg" asChild className="bg-primary text-primary-foreground hover:bg-primary/90">
             <Link href="#contact">Contact Us Directly</Link>
-          </Button>
+          </Button> 
+          */}
         </div>
       </Container>
     </section>
