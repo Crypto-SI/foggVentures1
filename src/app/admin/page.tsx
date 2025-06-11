@@ -208,8 +208,8 @@ export default function AdminPage() {
     <div className="flex flex-col min-h-screen bg-muted/40">
       <Header />
       <SidebarProvider defaultOpen={true}>
-        <div className="flex flex-1 h-[calc(100vh-theme(spacing.16))]"> {/* Adjust height to account for header, Footer is separate */}
-          <Sidebar collapsible="icon" className="h-full">
+        <div className="flex flex-1 h-[calc(100svh-theme(spacing.16))]"> {/* Use svh and ensure Header height is accounted for */}
+          <Sidebar collapsible="icon"> {/* Removed h-full, sidebar will manage its own height */}
             <ShadSidebarHeader className="p-2 border-b border-sidebar-border">
               <h2 className="text-lg font-semibold text-sidebar-foreground text-center group-data-[collapsible=icon]:hidden">Admin Menu</h2>
               <LayoutDashboard className="h-6 w-6 mx-auto text-sidebar-primary group-data-[collapsible=icon]:block hidden" />
@@ -269,7 +269,7 @@ export default function AdminPage() {
                 </div>
                 <SidebarTrigger className="md:hidden text-primary" />
               </div>
-              <div className="max-w-5xl mx-auto"> {/* Constrain width of content area */}
+              <div className="max-w-5xl mx-auto">
                 {renderSection()}
               </div>
             </main>
