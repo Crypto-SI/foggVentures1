@@ -17,12 +17,11 @@ export function Header() {
       <Container className="flex h-16 items-center justify-between">
         <Link href="/" className="flex items-center gap-2">
           <Image
-            src="https://placehold.co/36x36.png"
+            src="/images/foggicontrans.png"
             alt="FOGG Ventures Icon"
             width={36} 
             height={36}
             className="h-9 w-9"
-            data-ai-hint="logo"
           />
           <span className="text-xl font-bold text-primary font-headline">
             FOGG Ventures
