@@ -36,7 +36,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'stabroeknews.com',
+        hostname: '*.stabroeknews.com',
         port: '',
         pathname: '/**',
       },
