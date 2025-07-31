@@ -25,9 +25,9 @@ export function HeroSection() {
               </Button>
             </div>
           </div>
-          <div className="relative w-56 h-56 md:w-64 md:h-64 mx-auto md:ml-auto md:mr-0 rounded-lg overflow-hidden shadow-2xl flex items-center justify-center border-2 border-accent/20 bg-primary-foreground/5">
+          <div className="relative w-56 h-56 md:w-64 md:h-64 mx-auto md:ml-auto md-mr-0 rounded-lg overflow-hidden shadow-2xl flex items-center justify-center border-2 border-accent/20 bg-primary-foreground/5">
             <Image
-              src="https://placehold.co/200x200.png"
+              src="/images/fogg.png"
               alt="FOGG Ventures Logo"
               layout="fill"
               objectFit="contain"
