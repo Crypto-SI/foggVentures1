@@ -8,7 +8,7 @@ export function Header() {
   const navItems = [
     { name: 'About', href: '/#about' },
     { name: 'Services', href: '/#services' },
-    { name: 'Gallery', href: '/#gallery' },
+    { name: 'Gallery', href: '/gallery' },
     { name: 'News', href: '/news' },
     { name: 'How can we help', href: '/ai-assistant' },
   ];
@@ -23,6 +23,7 @@ export function Header() {
             width={36} 
             height={36}
             className="h-9 w-9"
+            data-ai-hint="logo"
           />
           <span className="text-xl font-bold text-primary font-headline">
             FOGG Ventures
