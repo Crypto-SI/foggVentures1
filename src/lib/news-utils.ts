@@ -27,7 +27,12 @@ export interface ParsedRssItem {
   // Add other fields as needed based on typical RSS structures
 }
 
-const parser = new Parser();
+// Add a User-Agent header to mimic a browser and prevent being blocked.
+const parser = new Parser({
+  headers: {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36'
+  }
+});
 
 export async function getNewsFromRss(feedUrl: string): Promise<ParsedRssItem[]> {
   try {
