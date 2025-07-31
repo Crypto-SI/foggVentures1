@@ -6,7 +6,7 @@ import { NewsCard, type NewsCardProps } from '@/components/news-card';
 import type { ParsedRssItem } from '@/lib/news-utils';
 import { getNewsFromRss } from '@/lib/news-utils';
 
-// Helper to transform ParsedRssItem to NewsCardProps
+// Helper to transform ParsedRssItem to NewsCardProps, ensuring serializable data
 function transformRssItemToNewsCardProps(item: ParsedRssItem): NewsCardProps {
   // Attempt to find an image URL
   let imageUrl = 'https://placehold.co/600x400.png'; // Default placeholder
@@ -15,17 +15,16 @@ function transformRssItemToNewsCardProps(item: ParsedRssItem): NewsCardProps {
   } else if (item['media:content'] && item['media:content'].$ && item['media:content'].$.url && item['media:content'].$.medium === 'image') {
     imageUrl = item['media:content'].$.url;
   }
-  // More advanced image extraction from item.content or item.contentEncoded could be added here if needed
-
+  
+  // Explicitly create a new object with only the required, serializable fields.
   return {
-    id: item.guid || item.link || item.title || Date.now().toString(), // Ensure a unique ID
+    id: item.guid || item.link || item.title || Date.now().toString(),
     title: item.title || 'Untitled Article',
-    source: item.creator || new URL(item.link || 'https://example.com').hostname, // Fallback to hostname
+    source: item.creator || (item.link ? new URL(item.link).hostname : 'N/A'),
     date: item.pubDate ? new Date(item.pubDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'N/A',
-    summary: item.contentSnippet || item.content?.substring(0, 150) + '...' || 'No summary available.',
+    summary: item.contentSnippet || (item.content ? item.content.substring(0, 150) + '...' : 'No summary available.'),
     articleUrl: item.link || '#',
     imageUrl: imageUrl,
-    // data-ai-hint is not typically used when images come from a feed
   };
 }
 
