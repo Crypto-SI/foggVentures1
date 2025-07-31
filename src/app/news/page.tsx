@@ -3,8 +3,8 @@ import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { Container } from '@/components/container';
 import { NewsCard, type NewsCardProps } from '@/components/news-card';
-import type { ParsedRssItem } from '@/lib/news-utils'; // We'll define this
-import { getNewsFromMockRss } from '@/lib/news-utils'; // We'll create this
+import type { ParsedRssItem } from '@/lib/news-utils';
+import { getNewsFromRss } from '@/lib/news-utils';
 
 // Helper to transform ParsedRssItem to NewsCardProps
 function transformRssItemToNewsCardProps(item: ParsedRssItem): NewsCardProps {
@@ -31,9 +31,7 @@ function transformRssItemToNewsCardProps(item: ParsedRssItem): NewsCardProps {
 
 
 export default async function NewsPage() {
-  // In a real scenario, getNewsFromRss would fetch and parse the actual RSS feed.
-  // For now, it returns mock data.
-  const newsItems: ParsedRssItem[] = await getNewsFromMockRss();
+  const newsItems: ParsedRssItem[] = await getNewsFromRss('https://rss.app/feed/goLUOP2x85mRXLd6');
   const processedNewsItems: NewsCardProps[] = newsItems.map(transformRssItemToNewsCardProps);
 
   return (
