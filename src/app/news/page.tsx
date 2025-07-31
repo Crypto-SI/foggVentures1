@@ -48,13 +48,13 @@ async function getNewsFromRss(feedUrl: string): Promise<ParsedRssItem[]> {
 function transformItemToCardProps(item: ParsedRssItem): NewsCardProps {
   let imageUrl = 'https://placehold.co/600x400.png'; // Default placeholder
 
-  // 1. Check enclosure tag
-  if (item.enclosure?.url && item.enclosure.type?.startsWith('image/')) {
-    imageUrl = item.enclosure.url;
-  } 
-  // 2. Check media:content tag
-  else if (item['media:content']?.['$']?.url && item['media:content']?.['$']?.medium === 'image') {
+  // 1. Check media:content tag (often the most reliable for images)
+  if (item['media:content']?.['$']?.url && item['media:content']?.['$']?.medium === 'image') {
     imageUrl = item['media:content']['$'].url;
+  }
+  // 2. Check enclosure tag
+  else if (item.enclosure?.url && item.enclosure.type?.startsWith('image/')) {
+    imageUrl = item.enclosure.url;
   } 
   // 3. Fallback: Parse content for an <img> tag
   else if (item.content) {
