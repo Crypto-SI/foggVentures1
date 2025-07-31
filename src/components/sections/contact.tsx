@@ -3,7 +3,7 @@
 
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { useFormState, useFormStatus } from 'react-dom'; // Corrected imports
+import { useFormState, useFormStatus } from 'react-dom';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { submitEnquiry, type ContactFormState } from '@/app/actions';
 import { contactFormSchema, type ContactFormValues } from '@/lib/schemas';
@@ -64,7 +64,7 @@ export function ContactSection() {
         form.reset(state.fieldValues);
       }
     }
-  }, [state, toast, form.reset]); // form.reset is stable, added to deps
+  }, [state, toast, form]);
 
   return (
     <section id="contact" className="py-16 md:py-24 bg-background">
