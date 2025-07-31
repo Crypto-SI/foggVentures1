@@ -63,6 +63,12 @@ const nextConfig: NextConfig = {
         hostname: 'oilnow.gy',
         port: '',
         pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'nycaribnews.com',
+        port: '',
+        pathname: '/**',
       }
     ],
   },
