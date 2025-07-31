@@ -3,7 +3,8 @@
 
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { useFormState, useFormStatus } from 'react-dom';
+import { useActionState } from 'react';
+import { useFormStatus } from 'react-dom';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { submitEnquiry, type ContactFormState } from '@/app/actions';
 import { contactFormSchema, type ContactFormValues } from '@/lib/schemas';
@@ -37,7 +38,7 @@ function FormSubmitButton() {
 
 export function ContactSection() {
   const { toast } = useToast();
-  const [state, formAction] = useFormState(submitEnquiry, initialFormState);
+  const [state, formAction] = useActionState(submitEnquiry, initialFormState);
   
   const form = useForm<ContactFormValues>({
     resolver: zodResolver(contactFormSchema),
