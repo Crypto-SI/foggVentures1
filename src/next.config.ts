@@ -36,7 +36,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'stabroeknews.com',
+        hostname: '*.stabroeknews.com',
         port: '',
         pathname: '/**',
       },
@@ -63,7 +63,25 @@ const nextConfig: NextConfig = {
         hostname: 'oilnow.gy',
         port: '',
         pathname: '/**',
-      }
+      },
+      {
+        protocol: 'https',
+        hostname: 'nycaribnews.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'http',
+        hostname: 'constitutionnet.org',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'caribbeannationalweekly.com',
+        port: '',
+        pathname: '/**',
+      },
     ],
   },
 };
