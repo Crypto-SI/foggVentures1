@@ -23,9 +23,9 @@ import {
   SidebarInset,
 } from '@/components/ui/sidebar';
 
-import { Mail, Newspaper, Share2, CalendarDays, ImageUp, LayoutDashboard, Upload, Edit3, LibraryBig, UploadCloud, Wand2 } from 'lucide-react';
+import { Mail, Newspaper, Share2, CalendarDays, ImageUp, LayoutDashboard, Upload, Edit3, LibraryBig, UploadCloud, Wand2, Trash2 } from 'lucide-react';
 
-type AdminSection = 'dashboard' | 'mailingList' | 'blogPosts' | 'socialMedia' | 'schedule' | 'mediaLibrary' | 'knowledgeBase';
+type AdminSection = 'dashboard' | 'mailingList' | 'blogPosts' | 'socialMedia' | 'schedule' | 'mediaLibrary' | 'knowledgeBase' | 'gallery';
 
 export default function AdminPage() {
   const [activeSection, setActiveSection] = useState<AdminSection>('dashboard');
@@ -48,6 +48,47 @@ export default function AdminPage() {
             <CardContent>
               <p className="text-lg text-muted-foreground">Select a section from the sidebar to manage your content and operations.</p>
               <p className="mt-4">You can manage blog posts, social media content, your media library, mailing lists, schedules, and the AI knowledge base from this central hub.</p>
+            </CardContent>
+          </Card>
+        );
+      case 'gallery':
+        return (
+          <Card className="shadow-lg">
+            <CardHeader>
+              <div className="flex items-center gap-3 mb-1">
+                <ImageUp className="w-7 h-7 text-accent" />
+                <CardTitle className="text-2xl text-primary">Manage Gallery</CardTitle>
+              </div>
+              <CardDescription>Add, edit, or delete images in your public gallery.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div>
+                <h3 className="mb-4 text-lg font-semibold text-foreground">Add New Gallery Item</h3>
+                <div className="space-y-4 p-4 border rounded-md">
+                   <div>
+                    <Label htmlFor="galleryImage" className="font-medium">Image Upload</Label>
+                    <Input id="galleryImage" type="file" accept="image/*" className="mt-1 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
+                  </div>
+                  <div>
+                    <Label htmlFor="galleryTitle" className="font-medium">Title</Label>
+                    <Input id="galleryTitle" placeholder="e.g., Meeting with the Minister" className="mt-1" />
+                  </div>
+                  <div>
+                    <Label htmlFor="galleryCaption" className="font-medium">Caption</Label>
+                    <Textarea id="galleryCaption" placeholder="e.g., Discussing bilateral trade agreements..." rows={3} className="mt-1" />
+                  </div>
+                  <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
+                    <Upload className="w-4 h-4 mr-2" /> Add to Gallery
+                  </Button>
+                </div>
+              </div>
+              <Separator />
+              <div>
+                  <h3 className="mb-3 text-lg font-semibold text-foreground">Existing Gallery Items</h3>
+                  <div className="p-4 border border-dashed rounded-md min-h-[100px] flex items-center justify-center bg-muted/50">
+                    <p className="text-sm text-muted-foreground">(A list or grid of existing gallery items with edit/delete options would appear here.)</p>
+                  </div>
+              </div>
             </CardContent>
           </Card>
         );
@@ -316,6 +357,12 @@ export default function AdminPage() {
                     <span>Media Library</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton onClick={() => handleSidebarClick('gallery')} isActive={activeSection === 'gallery'} tooltip="Gallery">
+                    <ImageUp />
+                    <span>Gallery</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
               </SidebarMenu>
             </ShadSidebarContent>
           </Sidebar>
@@ -326,7 +373,8 @@ export default function AdminPage() {
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight text-primary font-headline">
                         { (activeSection === 'blogPosts' && showAiBlogGenerator) ? "AI Blog Post Generator" :
-                          activeSection === 'knowledgeBase' ? 'Knowledge Base' : 
+                          activeSection === 'knowledgeBase' ? 'Knowledge Base' :
+                          activeSection === 'gallery' ? 'Gallery Management' :
                           activeSection.charAt(0).toUpperCase() + activeSection.slice(1).replace(/([A-Z])/g, ' $1')
                         }
                     </h1>
@@ -334,6 +382,7 @@ export default function AdminPage() {
                         { (activeSection === 'blogPosts' && showAiBlogGenerator) ? "Follow the steps to generate a new blog post with AI assistance." :
                           activeSection === 'dashboard' ? 'Overview of your admin panel.' : 
                           activeSection === 'knowledgeBase' ? 'Upload and manage documents for the AI assistant.' :
+                          activeSection === 'gallery' ? 'Add, edit, or delete items in your public gallery.' :
                          `Manage your ${activeSection.toLowerCase().replace(/([A-Z])/g, ' $1')}.`}
                     </p>
                 </div>
@@ -350,3 +399,5 @@ export default function AdminPage() {
     </div>
   );
 }
+
+    
