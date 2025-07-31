@@ -67,7 +67,7 @@ function transformItemToCardProps(item: ParsedRssItem): NewsCardProps {
 
 
 export default async function NewsPage() {
-  const newsItems = await getNewsFromRss('https://rss.app/feed/goLUOP2x85mRXLd6');
+  const newsItems = await getNewsFromRss('https://rss.app/feeds/goLUOP2x85mRXLd6.xml');
   const processedNewsItems: NewsCardProps[] = newsItems.map(transformItemToCardProps);
 
   return (
