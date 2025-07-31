@@ -5,6 +5,7 @@ import { HeroSection } from '@/components/sections/hero';
 import { AboutFoggSection } from '@/components/sections/about-fogg-section';
 import { BioSection } from '@/components/sections/bio';
 import { ServicesSection } from '@/components/sections/services';
+import { GallerySection } from '@/components/sections/gallery-section';
 import { ContactSection } from '@/components/sections/contact';
 
 export default function Home() {
@@ -16,6 +17,7 @@ export default function Home() {
         <AboutFoggSection />
         <BioSection />
         <ServicesSection />
+        <GallerySection />
         <ContactSection />
       </main>
       <Footer />
