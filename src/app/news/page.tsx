@@ -48,19 +48,28 @@ async function getNewsFromRss(feedUrl: string): Promise<ParsedRssItem[]> {
 function transformItemToCardProps(item: ParsedRssItem): NewsCardProps {
   let imageUrl = 'https://placehold.co/600x400.png'; // Default placeholder
 
-  // Check various common locations for an image URL in an RSS item
+  // 1. Check enclosure tag
   if (item.enclosure?.url && item.enclosure.type?.startsWith('image/')) {
     imageUrl = item.enclosure.url;
-  } else if (item['media:content']?.['$']?.url && item['media:content']?.['$']?.medium === 'image') {
+  } 
+  // 2. Check media:content tag
+  else if (item['media:content']?.['$']?.url && item['media:content']?.['$']?.medium === 'image') {
     imageUrl = item['media:content']['$'].url;
+  } 
+  // 3. Fallback: Parse content for an <img> tag
+  else if (item.content) {
+    const match = item.content.match(/<img[^>]+src="([^">]+)"/);
+    if (match && match[1]) {
+      imageUrl = match[1];
+    }
   }
 
   return {
     id: String(item.guid || item.link || item.title || Date.now()),
     title: String(item.title || 'Untitled Article'),
-    source: String(item.creator || (item.link ? new URL(item.link).hostname : 'N/A')),
+    source: String(item.creator || (item.link ? new URL(item.link).hostname.replace('www.', '') : 'N/A')),
     date: item.pubDate ? new Date(item.pubDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'N/A',
-    summary: String(item.contentSnippet || (item.content ? item.content.substring(0, 150) + '...' : 'No summary available.')),
+    summary: String(item.contentSnippet || (item.content ? item.content.replace(/<[^>]*>?/gm, '').substring(0, 150) + '...' : 'No summary available.')),
     articleUrl: String(item.link || '#'),
     imageUrl: imageUrl,
   };
