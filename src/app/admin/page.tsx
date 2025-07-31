@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, type ChangeEvent } from 'react';
 import Image from 'next/image';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
@@ -11,7 +11,16 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
-import { AiBlogPostGenerator } from '@/components/admin/AiBlogPostGenerator'; // New import
+import { AiBlogPostGenerator } from '@/components/admin/AiBlogPostGenerator';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogClose,
+} from "@/components/ui/dialog";
 import {
   SidebarProvider,
   Sidebar,
@@ -28,50 +37,66 @@ import { Mail, Newspaper, Share2, CalendarDays, ImageUp, LayoutDashboard, Upload
 
 type AdminSection = 'dashboard' | 'mailingList' | 'blogPosts' | 'socialMedia' | 'schedule' | 'mediaLibrary' | 'knowledgeBase' | 'gallery';
 
-const mockGalleryItems = [
+interface GalleryItem {
+  id: number;
+  imageUrl: string;
+  imageHint: string;
+  title: string;
+  caption: string;
+}
+
+const initialGalleryItems: GalleryItem[] = [
   {
+    id: 1,
     imageUrl: 'https://placehold.co/600x400.png',
     imageHint: 'diplomats meeting',
     title: 'Meeting with the Minister of Foreign Affairs',
     caption: 'Discussing bilateral trade agreements and opportunities for foreign investment in key sectors.',
   },
   {
+    id: 2,
     imageUrl: 'https://placehold.co/600x400.png',
     imageHint: 'business conference',
     title: 'Speaking at the Guyana Energy Conference',
     caption: 'Presenting insights on the future of sustainable energy and policy development in the region.',
   },
   {
+    id: 3,
     imageUrl: 'https://placehold.co/600x400.png',
     imageHint: 'handshake deal',
     title: 'Finalizing a Partnership with a Local Enterprise',
     caption: 'A successful collaboration to bring new technology and services to the Guyanese market.',
   },
   {
+    id: 4,
     imageUrl: 'https://placehold.co/600x400.png',
     imageHint: 'ambassador reception',
     title: 'Reception at the British High Commission',
     caption: 'Engaging with international diplomats and business leaders to foster stronger relationships.',
   },
   {
+    id: 5,
     imageUrl: 'https://placehold.co/600x400.png',
     imageHint: 'podium presentation',
     title: 'Advising a Trade Delegation',
     caption: 'Providing strategic counsel to a delegation on navigating Guyana\'s economic landscape.',
   },
   {
+    id: 6,
     imageUrl: 'https://placehold.co/600x400.png',
     imageHint: 'charity event',
     title: 'Supporting a Community Initiative',
     caption: 'Participating in a local charity event to support educational programs for young people.',
   },
   {
+    id: 7,
     imageUrl: 'https://placehold.co/600x400.png',
     imageHint: 'signing ceremony',
     title: 'MOU Signing Ceremony',
     caption: 'Signing a memorandum of understanding to promote joint ventures in the agricultural sector.',
   },
   {
+    id: 8,
     imageUrl: 'https://placehold.co/600x400.png',
     imageHint: 'roundtable discussion',
     title: 'Economic Roundtable',
@@ -83,6 +108,35 @@ const mockGalleryItems = [
 export default function AdminPage() {
   const [activeSection, setActiveSection] = useState<AdminSection>('dashboard');
   const [showAiBlogGenerator, setShowAiBlogGenerator] = useState(false);
+  
+  // Gallery state
+  const [galleryItems, setGalleryItems] = useState<GalleryItem[]>(initialGalleryItems);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [editingItem, setEditingItem] = useState<GalleryItem | null>(null);
+  const [editFormData, setEditFormData] = useState({ title: '', caption: '' });
+
+  const handleEditClick = (item: GalleryItem) => {
+    setEditingItem(item);
+    setEditFormData({ title: item.title, caption: item.caption });
+    setIsEditDialogOpen(true);
+  };
+  
+  const handleEditFormChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { id, value } = e.target;
+    setEditFormData(prev => ({ ...prev, [id]: value }));
+  };
+
+  const handleSaveChanges = () => {
+    if (!editingItem) return;
+    setGalleryItems(prevItems =>
+      prevItems.map(item =>
+        item.id === editingItem.id ? { ...item, ...editFormData } : item
+      )
+    );
+    setIsEditDialogOpen(false);
+    setEditingItem(null);
+  };
+  
 
   const renderSection = () => {
     if (activeSection === 'blogPosts' && showAiBlogGenerator) {
@@ -139,8 +193,8 @@ export default function AdminPage() {
               <div>
                   <h3 className="mb-4 text-lg font-semibold text-foreground">Existing Gallery Items</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                    {mockGalleryItems.map((item, index) => (
-                      <Card key={index} className="overflow-hidden flex flex-col">
+                    {galleryItems.map((item) => (
+                      <Card key={item.id} className="overflow-hidden flex flex-col">
                          <div className="relative aspect-video">
                             <Image src={item.imageUrl} alt={item.title} layout="fill" objectFit="cover" data-ai-hint={item.imageHint} />
                          </div>
@@ -150,7 +204,7 @@ export default function AdminPage() {
                          </CardContent>
                          <CardFooter className="p-2 border-t mt-auto">
                             <div className="flex w-full gap-2">
-                                <Button variant="outline" size="sm" className="flex-1 text-xs">
+                                <Button variant="outline" size="sm" className="flex-1 text-xs" onClick={() => handleEditClick(item)}>
                                     <Edit3 className="w-3.5 h-3.5 mr-1" /> Edit
                                 </Button>
                                 <Button variant="destructive" size="sm" className="flex-1 text-xs">
@@ -376,8 +430,8 @@ export default function AdminPage() {
     <div className="flex flex-col min-h-screen bg-muted/40">
       <Header />
       <SidebarProvider defaultOpen={true}>
-        <div className="flex flex-1 h-[calc(100svh-theme(spacing.16))]"> {/* Use svh and ensure Header height is accounted for */}
-          <Sidebar collapsible="icon"> {/* Removed h-full, sidebar will manage its own height */}
+        <div className="flex flex-1 h-[calc(100svh-theme(spacing.16))]">
+          <Sidebar collapsible="icon">
             <ShadSidebarHeader className="p-2 border-b border-sidebar-border">
               <h2 className="text-lg font-semibold text-sidebar-foreground text-center group-data-[collapsible=icon]:hidden">Admin Menu</h2>
               <LayoutDashboard className="h-6 w-6 mx-auto text-sidebar-primary group-data-[collapsible=icon]:block hidden" />
@@ -469,8 +523,47 @@ export default function AdminPage() {
         </div>
       </SidebarProvider>
       <Footer />
+
+      {/* Edit Gallery Item Dialog */}
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Edit Gallery Item</DialogTitle>
+            <DialogDescription>
+              Make changes to your gallery item here. Click save when you're done.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="title" className="text-right">
+                Title
+              </Label>
+              <Input id="title" value={editFormData.title} onChange={handleEditFormChange} className="col-span-3" />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="caption" className="text-right">
+                Caption
+              </Label>
+              <Textarea id="caption" value={editFormData.caption} onChange={handleEditFormChange} className="col-span-3" />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="picture" className="text-right">
+                Image
+              </Label>
+              <Input id="picture" type="file" className="col-span-3 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
+            </div>
+          </div>
+          <DialogFooter>
+            <DialogClose asChild>
+                <Button type="button" variant="secondary">
+                    Cancel
+                </Button>
+            </DialogClose>
+            <Button type="submit" onClick={handleSaveChanges}>Save Changes</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
-}
 
     
