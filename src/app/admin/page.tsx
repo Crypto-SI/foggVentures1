@@ -2,9 +2,10 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -26,6 +27,58 @@ import {
 import { Mail, Newspaper, Share2, CalendarDays, ImageUp, LayoutDashboard, Upload, Edit3, LibraryBig, UploadCloud, Wand2, Trash2 } from 'lucide-react';
 
 type AdminSection = 'dashboard' | 'mailingList' | 'blogPosts' | 'socialMedia' | 'schedule' | 'mediaLibrary' | 'knowledgeBase' | 'gallery';
+
+const mockGalleryItems = [
+  {
+    imageUrl: 'https://placehold.co/600x400.png',
+    imageHint: 'diplomats meeting',
+    title: 'Meeting with the Minister of Foreign Affairs',
+    caption: 'Discussing bilateral trade agreements and opportunities for foreign investment in key sectors.',
+  },
+  {
+    imageUrl: 'https://placehold.co/600x400.png',
+    imageHint: 'business conference',
+    title: 'Speaking at the Guyana Energy Conference',
+    caption: 'Presenting insights on the future of sustainable energy and policy development in the region.',
+  },
+  {
+    imageUrl: 'https://placehold.co/600x400.png',
+    imageHint: 'handshake deal',
+    title: 'Finalizing a Partnership with a Local Enterprise',
+    caption: 'A successful collaboration to bring new technology and services to the Guyanese market.',
+  },
+  {
+    imageUrl: 'https://placehold.co/600x400.png',
+    imageHint: 'ambassador reception',
+    title: 'Reception at the British High Commission',
+    caption: 'Engaging with international diplomats and business leaders to foster stronger relationships.',
+  },
+  {
+    imageUrl: 'https://placehold.co/600x400.png',
+    imageHint: 'podium presentation',
+    title: 'Advising a Trade Delegation',
+    caption: 'Providing strategic counsel to a delegation on navigating Guyana\'s economic landscape.',
+  },
+  {
+    imageUrl: 'https://placehold.co/600x400.png',
+    imageHint: 'charity event',
+    title: 'Supporting a Community Initiative',
+    caption: 'Participating in a local charity event to support educational programs for young people.',
+  },
+  {
+    imageUrl: 'https://placehold.co/600x400.png',
+    imageHint: 'signing ceremony',
+    title: 'MOU Signing Ceremony',
+    caption: 'Signing a memorandum of understanding to promote joint ventures in the agricultural sector.',
+  },
+  {
+    imageUrl: 'https://placehold.co/600x400.png',
+    imageHint: 'roundtable discussion',
+    title: 'Economic Roundtable',
+    caption: 'Leading a roundtable discussion on foreign direct investment with international partners.',
+  }
+];
+
 
 export default function AdminPage() {
   const [activeSection, setActiveSection] = useState<AdminSection>('dashboard');
@@ -84,9 +137,29 @@ export default function AdminPage() {
               </div>
               <Separator />
               <div>
-                  <h3 className="mb-3 text-lg font-semibold text-foreground">Existing Gallery Items</h3>
-                  <div className="p-4 border border-dashed rounded-md min-h-[100px] flex items-center justify-center bg-muted/50">
-                    <p className="text-sm text-muted-foreground">(A list or grid of existing gallery items with edit/delete options would appear here.)</p>
+                  <h3 className="mb-4 text-lg font-semibold text-foreground">Existing Gallery Items</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                    {mockGalleryItems.map((item, index) => (
+                      <Card key={index} className="overflow-hidden flex flex-col">
+                         <div className="relative aspect-video">
+                            <Image src={item.imageUrl} alt={item.title} layout="fill" objectFit="cover" data-ai-hint={item.imageHint} />
+                         </div>
+                         <CardContent className="p-4 flex-grow space-y-2">
+                            <h4 className="font-semibold text-sm leading-tight text-primary">{item.title}</h4>
+                            <p className="text-xs text-muted-foreground line-clamp-3">{item.caption}</p>
+                         </CardContent>
+                         <CardFooter className="p-2 border-t mt-auto">
+                            <div className="flex w-full gap-2">
+                                <Button variant="outline" size="sm" className="flex-1 text-xs">
+                                    <Edit3 className="w-3.5 h-3.5 mr-1" /> Edit
+                                </Button>
+                                <Button variant="destructive" size="sm" className="flex-1 text-xs">
+                                    <Trash2 className="w-3.5 h-3.5 mr-1" /> Delete
+                                </Button>
+                            </div>
+                         </CardFooter>
+                      </Card>
+                    ))}
                   </div>
               </div>
             </CardContent>
