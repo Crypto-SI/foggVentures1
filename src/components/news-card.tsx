@@ -1,9 +1,11 @@
+"use client";
 
 import Image from 'next/image';
 import Link from 'next/link';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ExternalLink, CalendarDays, NewspaperIcon } from 'lucide-react';
+import { useState } from 'react';
 
 export interface NewsCardProps {
   id: string;
@@ -17,12 +19,14 @@ export interface NewsCardProps {
 }
 
 export function NewsCard({ id, title, source, date, summary, articleUrl, imageUrl }: NewsCardProps) {
+  const [currentImageUrl, setCurrentImageUrl] = useState(imageUrl);
+
   return (
     <Card className="flex flex-col h-full overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 ease-in-out group bg-card">
       <CardHeader className="p-0">
         <div className="aspect-[16/9] relative overflow-hidden">
           <Image
-            src={imageUrl}
+            src={currentImageUrl}
             alt={title}
             fill // Changed from layout="fill" to fill for Next 13+
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" // Added sizes prop for fill
@@ -30,10 +34,9 @@ export function NewsCard({ id, title, source, date, summary, articleUrl, imageUr
             className="group-hover:scale-105 transition-transform duration-500 ease-in-out"
             // data-ai-hint is removed
             priority={false} // Consider setting priority for above-the-fold images if applicable
-            onError={(e) => {
+            onError={() => {
               // Fallback to placeholder if image fails to load
-              e.currentTarget.srcset = 'https://placehold.co/600x400.png';
-              e.currentTarget.src = 'https://placehold.co/600x400.png';
+              setCurrentImageUrl('https://placehold.co/600x400.png');
             }}
           />
         </div>
