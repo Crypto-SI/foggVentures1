@@ -9,6 +9,7 @@ export function Header() {
     { name: 'About', href: '/#about' },
     { name: 'Services', href: '/#services' },
     { name: 'FOGG Forecasts', href: '/blog'},
+    { name: 'News', href: '/news' },
     { name: 'AI Assist', href: '/ai-assistant' },
   ];
 
