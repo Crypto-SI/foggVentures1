@@ -9,7 +9,7 @@ export function Header() {
     { name: 'About', href: '/#about' },
     { name: 'Services', href: '/#services' },
     { name: 'News', href: '/news' },
-    { name: 'AI Assist', href: '/ai-assistant' },
+    { name: 'How can we help', href: '/ai-assistant' },
   ];
 
   return (
