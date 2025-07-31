@@ -3,35 +3,72 @@ import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { Container } from '@/components/container';
 import { NewsCard, type NewsCardProps } from '@/components/news-card';
-import type { ParsedRssItem } from '@/lib/news-utils';
-import { getNewsFromRss } from '@/lib/news-utils';
+import Parser from 'rss-parser';
 
-// Helper to transform ParsedRssItem to NewsCardProps, ensuring serializable data
-function transformRssItemToNewsCardProps(item: ParsedRssItem): NewsCardProps {
-  // Attempt to find an image URL
-  let imageUrl = 'https://placehold.co/600x400.png'; // Default placeholder
-  if (item.enclosure && item.enclosure.url && item.enclosure.type && item.enclosure.type.startsWith('image/')) {
-    imageUrl = item.enclosure.url;
-  } else if (item['media:content'] && item['media:content'].$ && item['media:content'].$.url && item['media:content'].$.medium === 'image') {
-    imageUrl = item['media:content'].$.url;
+// RSS Parser and data transformation logic are moved directly into this file
+// to ensure no non-serializable data is passed from the server component.
+
+interface ParsedRssItem {
+  title?: string;
+  link?: string;
+  pubDate?: string;
+  contentSnippet?: string;
+  content?: string;
+  guid?: string;
+  isoDate?: string;
+  creator?: string;
+  enclosure?: {
+    url?: string;
+    type?: string;
+  };
+  'media:content'?: {
+    '$': {
+      url?: string;
+      medium?: string;
+    };
+  };
+}
+
+async function getNewsFromRss(feedUrl: string): Promise<ParsedRssItem[]> {
+  try {
+    const parser = new Parser({
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36'
+      }
+    });
+    console.log(`Fetching RSS feed from: ${feedUrl}`);
+    const feed = await parser.parseURL(feedUrl);
+    return (feed.items as ParsedRssItem[]) || [];
+  } catch (error) {
+    console.error('Failed to fetch or parse RSS feed:', error);
+    return [];
   }
-  
-  // Explicitly create a new object with only the required, serializable fields.
+}
+
+function transformItemToCardProps(item: ParsedRssItem): NewsCardProps {
+  let imageUrl = 'https://placehold.co/600x400.png'; // Default placeholder
+
+  if (item.enclosure?.url && item.enclosure.type?.startsWith('image/')) {
+    imageUrl = item.enclosure.url;
+  } else if (item['media:content']?.['$']?.url && item['media:content']?.['$']?.medium === 'image') {
+    imageUrl = item['media:content']['$'].url;
+  }
+
   return {
-    id: item.guid || item.link || item.title || Date.now().toString(),
-    title: item.title || 'Untitled Article',
-    source: item.creator || (item.link ? new URL(item.link).hostname : 'N/A'),
+    id: String(item.guid || item.link || item.title || Date.now()),
+    title: String(item.title || 'Untitled Article'),
+    source: String(item.creator || (item.link ? new URL(item.link).hostname : 'N/A')),
     date: item.pubDate ? new Date(item.pubDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'N/A',
-    summary: item.contentSnippet || (item.content ? item.content.substring(0, 150) + '...' : 'No summary available.'),
-    articleUrl: item.link || '#',
+    summary: String(item.contentSnippet || (item.content ? item.content.substring(0, 150) + '...' : 'No summary available.')),
+    articleUrl: String(item.link || '#'),
     imageUrl: imageUrl,
   };
 }
 
 
 export default async function NewsPage() {
-  const newsItems: ParsedRssItem[] = await getNewsFromRss('https://rss.app/feed/goLUOP2x85mRXLd6');
-  const processedNewsItems: NewsCardProps[] = newsItems.map(transformRssItemToNewsCardProps);
+  const newsItems = await getNewsFromRss('https://rss.app/feed/goLUOP2x85mRXLd6');
+  const processedNewsItems: NewsCardProps[] = newsItems.map(transformItemToCardProps);
 
   return (
     <div className="flex flex-col min-h-screen bg-muted/40">
