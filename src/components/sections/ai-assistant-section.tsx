@@ -135,10 +135,10 @@ export function AiAssistantSection() {
       <Container>
         <div className="text-center mb-12">
           <h2 className="font-headline text-3xl sm:text-4xl font-bold text-primary">
-            AI-Powered Preliminary Assessment
+            FOGG Ventures Preliminary Assessment
           </h2>
           <p className="mt-4 text-lg text-foreground/80 max-w-3xl mx-auto">
-            Describe your challenge or objective. Our AI may ask follow-up questions to provide a more accurate assessment.
+            Describe your challenge or objective. The system may ask follow-up questions to provide a more accurate assessment.
           </p>
         </div>
 
@@ -165,7 +165,7 @@ export function AiAssistantSection() {
             </CardHeader>
             <CardContent className="flex-grow">
               <p className="text-card-foreground/90">
-                If your initial query is unclear, the AI may ask a few follow-up questions to better understand your situation.
+                If your initial query is unclear, the system may ask a few follow-up questions to better understand your situation.
               </p>
             </CardContent>
           </Card>
@@ -174,11 +174,11 @@ export function AiAssistantSection() {
               <div className="mx-auto bg-accent/10 p-3 rounded-full mb-2">
                 <BrainCircuit className="h-10 w-10 text-accent" />
               </div>
-              <CardTitle className="text-xl font-semibold text-primary">3. Receive AI Insights</CardTitle>
+              <CardTitle className="text-xl font-semibold text-primary">3. Receive Insights</CardTitle>
             </CardHeader>
             <CardContent className="flex-grow">
               <p className="text-card-foreground/90">
-                Our AI will provide potential strategies. Enter your email to unlock detailed reasoning and success chances. This is a preliminary, non-binding assessment. <span className="font-semibold block mt-2">No information is saved by FOGG Ventures without your consent.</span>
+                Our system will provide potential strategies. Enter your email to unlock detailed reasoning and success chances. This is a preliminary, non-binding assessment. <span className="font-semibold block mt-2">No information is saved by FOGG Ventures without your consent.</span>
               </p>
             </CardContent>
           </Card>
@@ -192,7 +192,7 @@ export function AiAssistantSection() {
             <CardDescription className="text-card-foreground/80">
               {activeConversation 
                 ? "Please answer the questions below to help refine the assessment." 
-                : "Enter your query below. Our AI may ask for more details if needed."}
+                : "Enter your query below. The system may ask for more details if needed."}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -222,7 +222,7 @@ export function AiAssistantSection() {
                     <AlertDescription>
                       Your original query: <em className="text-foreground">"{activeConversation.originalQuery}"</em>
                       <br />
-                      Please answer the following to help the AI provide a better assessment:
+                      Please answer the following to help provide a better assessment:
                     </AlertDescription>
                   </Alert>
                   {activeConversation.questions.map((question, index) => (
@@ -273,7 +273,7 @@ export function AiAssistantSection() {
                     Getting Assessment...
                   </>
                 ) : (
-                  activeConversation ? 'Submit Answers & Get Assessment' : 'Get AI Assessment'
+                  activeConversation ? 'Submit Answers & Get Assessment' : 'Get Assessment'
                 )}
               </Button>
               {(assessment || activeConversation || error || isEmailFormVisible) && !isLoading && (
@@ -301,7 +301,7 @@ export function AiAssistantSection() {
         {assessment && assessment.type === 'assessment' && !error && !activeConversation && (
           <div className="mt-12 max-w-3xl mx-auto">
             <h3 className="text-2xl font-semibold text-primary mb-2 text-center">
-              {areDetailsUnlocked ? "AI Assessment Results" : "Preliminary Strategies"}
+              {areDetailsUnlocked ? "Assessment Results" : "Preliminary Strategies"}
             </h3>
              {!areDetailsUnlocked && isEmailFormVisible && (
                 <p className="text-center text-muted-foreground mb-6">Key strategies identified. Enter your email below to unlock detailed reasoning and success probabilities.</p>
