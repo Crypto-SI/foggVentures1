@@ -16,12 +16,17 @@
 # next.js
 /.next/
 /out/
+/.next-static/
+/.next-cache/
 
 # production
 /build
+/.turbo
 
 # misc
 .DS_Store
+Thumbs.db
+*.log
 *.pem
 
 # debug
@@ -37,9 +42,34 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# genkit & AI artifacts
 .genkit/*
-.env*
+/src/ai/*.local.*
+
+# environment & secrets
+.env
+.env.*
+!.env.example
 
 # firebase
 firebase-debug.log
 firestore-debug.log
+
+# IDE/editor
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/tasks.json
+!.vscode/launch.json
+.idea/
+*.iml
+
+# OS / misc
+*.swp
+*.swo
+*.tmp
+*.temp
+
+# lock / backup artifacts
+*.bak
+*.orig
