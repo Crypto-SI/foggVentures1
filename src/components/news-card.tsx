@@ -1,11 +1,8 @@
 "use client";
 
-import Image from 'next/image';
-import Link from 'next/link';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ExternalLink, CalendarDays, NewspaperIcon } from 'lucide-react';
-import { useState } from 'react';
 
 export interface NewsCardProps {
   id: string;
@@ -14,52 +11,53 @@ export interface NewsCardProps {
   date: string;
   summary: string;
   articleUrl: string;
-  imageUrl: string;
-  // imageHint is removed as images will come from the feed or a default placeholder
 }
 
-export function NewsCard({ id, title, source, date, summary, articleUrl, imageUrl }: NewsCardProps) {
-  const [currentImageUrl, setCurrentImageUrl] = useState(imageUrl);
+export function NewsCard({ title, source, date, summary, articleUrl }: NewsCardProps) {
+  const openArticle = () => {
+    window.open(articleUrl, '_blank', 'noopener,noreferrer');
+  };
 
   return (
-    <Card className="flex flex-col h-full overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 ease-in-out group bg-card">
-      <CardHeader className="p-0">
-        <div className="aspect-[16/9] relative overflow-hidden">
-          <Image
-            src={currentImageUrl}
-            alt={title}
-            fill // Changed from layout="fill" to fill for Next 13+
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" // Added sizes prop for fill
-            style={{ objectFit: "cover" }} // Changed from objectFit="cover"
-            className="group-hover:scale-105 transition-transform duration-500 ease-in-out"
-            // data-ai-hint is removed
-            priority={false} // Consider setting priority for above-the-fold images if applicable
-            onError={() => {
-              // Fallback to placeholder if image fails to load
-              setCurrentImageUrl('https://placehold.co/600x400.png');
-            }}
-          />
+    <Card
+      className="flex flex-col h-full overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 ease-in-out bg-card cursor-pointer"
+      role="link"
+      tabIndex={0}
+      onClick={openArticle}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          openArticle();
+        }
+      }}
+    >
+      <CardHeader className="p-6 pb-2">
+        <div className="flex items-center gap-2 text-xs uppercase tracking-wide text-muted-foreground">
+          <NewspaperIcon className="w-3.5 h-3.5 text-accent" />
+          <span className="font-medium">{source}</span>
+          <span className="text-muted-foreground/60">•</span>
+          <div className="inline-flex items-center gap-1">
+            <CalendarDays className="w-3 h-3 text-accent" />
+            <span>{date}</span>
+          </div>
         </div>
-      </CardHeader>
-      <CardContent className="p-6 flex-grow">
-        <CardTitle className="text-lg font-semibold text-primary group-hover:text-accent transition-colors mb-2">
+        <CardTitle className="mt-3 text-xl font-semibold text-card-foreground group-hover:text-accent transition-colors">
           {title}
         </CardTitle>
-        <div className="flex items-center text-xs text-muted-foreground mb-1">
-          <NewspaperIcon className="w-3.5 h-3.5 mr-1.5 text-accent" />
-          <span>Source: {source}</span>
-        </div>
-        <div className="flex items-center text-xs text-muted-foreground mb-3">
-          <CalendarDays className="w-3.5 h-3.5 mr-1.5 text-accent" />
-          <span>{date}</span>
-        </div>
-        <p className="text-sm text-card-foreground/80 line-clamp-4">{summary}</p>
+      </CardHeader>
+      <CardContent className="px-6 py-4 text-sm text-card-foreground/80 flex-grow">
+        <p className="line-clamp-5 leading-relaxed">{summary}</p>
       </CardContent>
-      <CardFooter className="p-6 pt-0">
-        <Button variant="outline" asChild className="w-full border-accent text-accent hover:bg-accent/10 hover:text-accent">
-          <Link href={articleUrl} target="_blank" rel="noopener noreferrer">
-            Read More <ExternalLink className="w-4 h-4 ml-2" />
-          </Link>
+      <CardFooter className="px-6 pb-6 pt-0">
+        <Button
+          variant="outline"
+          className="w-full border-accent text-accent hover:bg-accent/10 hover:text-accent"
+          onClick={(event) => {
+            event.stopPropagation();
+            openArticle();
+          }}
+        >
+          Read More <ExternalLink className="w-4 h-4 ml-2" />
         </Button>
       </CardFooter>
     </Card>

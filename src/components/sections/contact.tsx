@@ -68,19 +68,19 @@ export function ContactSection() {
   }, [state, toast, form]);
 
   return (
-    <section id="contact" className="py-16 md:py-24 bg-background">
+    <section id="contact" className="py-14 sm:py-16 md:py-24 bg-background">
       <Container>
         <Card className="max-w-2xl mx-auto shadow-xl bg-card">
-          <CardHeader className="text-center">
-            <CardTitle className="font-headline text-3xl sm:text-4xl font-bold text-primary">
+          <CardHeader className="text-center px-4">
+            <CardTitle className="font-headline text-2xl sm:text-3xl md:text-4xl font-bold text-primary">
               Book a Consultation
             </CardTitle>
-            <CardDescription className="mt-2 text-lg text-card-foreground/80">
+            <CardDescription className="mt-3 sm:mt-4 text-base sm:text-lg text-card-foreground/80">
               Reach out to discuss your specific needs and how we can assist you in Guyana.
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            <form action={formAction} className="space-y-6">
+          <CardContent className="px-4 sm:px-6 pb-6">
+            <form action={formAction} className="space-y-5">
               <div>
                 <Label htmlFor="name" className="text-sm font-medium text-foreground">Full Name</Label>
                 <Input

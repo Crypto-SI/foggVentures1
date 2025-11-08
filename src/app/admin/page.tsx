@@ -430,8 +430,8 @@ export default function AdminPage() {
     <div className="flex flex-col min-h-screen bg-muted/40">
       <Header />
       <SidebarProvider defaultOpen={true}>
-        <div className="flex flex-1 h-[calc(100svh-theme(spacing.16))]">
-          <Sidebar collapsible="icon">
+        <div className="flex flex-1 h-auto md:h-[calc(100svh-theme(spacing.16))]">
+          <Sidebar collapsible="icon" className="hidden md:flex">
             <ShadSidebarHeader className="p-2 border-b border-sidebar-border">
               <h2 className="text-lg font-semibold text-sidebar-foreground text-center group-data-[collapsible=icon]:hidden">Admin Menu</h2>
               <LayoutDashboard className="h-6 w-6 mx-auto text-sidebar-primary group-data-[collapsible=icon]:block hidden" />
@@ -494,9 +494,36 @@ export default function AdminPage() {
             </ShadSidebarContent>
           </Sidebar>
 
+          {/* Mobile top nav replacement for sidebar */}
+          <div className="md:hidden w-full border-b border-border/40 bg-background/95">
+            <div className="px-4 py-3 flex gap-2 overflow-x-auto">
+              {(['dashboard','knowledgeBase','mailingList','blogPosts','socialMedia','schedule','mediaLibrary','gallery'] as AdminSection[]).map((section) => (
+                <button
+                  key={section}
+                  onClick={() => handleSidebarClick(section)}
+                  className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap border ${
+                    activeSection === section
+                      ? 'bg-primary text-primary-foreground border-primary'
+                      : 'bg-background text-foreground border-border hover:bg-muted'
+                  }`}
+                >
+                  {section === 'blogPosts'
+                    ? 'Blog'
+                    : section === 'mediaLibrary'
+                    ? 'Media'
+                    : section === 'knowledgeBase'
+                    ? 'Knowledge'
+                    : section === 'mailingList'
+                    ? 'Mailing'
+                    : section.charAt(0).toUpperCase() + section.slice(1).replace(/([A-Z])/g, ' $1')}
+                </button>
+              ))}
+            </div>
+          </div>
+
           <SidebarInset className="flex-1 overflow-y-auto">
-            <main className="py-8 px-4 sm:px-6 lg:px-8">
-              <div className="mb-6 flex items-center justify-between">
+            <main className="py-6 sm:py-8 px-4 sm:px-6 lg:px-8">
+              <div className="mb-4 sm:mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight text-primary font-headline">
                         { (activeSection === 'blogPosts' && showAiBlogGenerator) ? "AI Blog Post Generator" :
@@ -513,9 +540,10 @@ export default function AdminPage() {
                          `Manage your ${activeSection.toLowerCase().replace(/([A-Z])/g, ' $1')}.`}
                     </p>
                 </div>
-                <SidebarTrigger className="md:hidden text-primary" />
-              </div>
-              <div className="max-w-5xl mx-auto">
+                {/* SidebarTrigger remains for md+ when collapsed to icon */}
+                <SidebarTrigger className="hidden md:inline-flex text-primary" />
+             </div>
+             <div className="max-w-5xl mx-auto">
                 {renderSection()}
               </div>
             </main>
@@ -565,5 +593,4 @@ export default function AdminPage() {
       </Dialog>
     </div>
   );
-
-    
+}
